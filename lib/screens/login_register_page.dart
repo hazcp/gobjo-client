@@ -1,27 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../main.dart';
-import '../constants.dart';
+import 'login_page.dart';
 import '../components/standard_button.dart';
+import '../components/background.dart';
 
-class LoginRegisterPage extends StatefulWidget {
-  @override
-  _LoginRegisterPageState createState() => _LoginRegisterPageState();
-}
-
-class _LoginRegisterPageState extends State<LoginRegisterPage> {
+class LoginRegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/the_background.png'),
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
+        Background(),
         Scaffold(
           backgroundColor: Colors.transparent,
           body: SafeArea(
@@ -34,7 +22,12 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
                     StandardButton(
                       textButton: 'SIGN IN',
                       onPressed: () {
-                        print('hello signed in');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LoginPage(),
+                          ),
+                        );
                       },
                     ),
                     StandardButton(
