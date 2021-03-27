@@ -1,16 +1,26 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:test_app/constants.dart';
-import 'package:test_app/screens/signup_page2.dart';
 import '../components/background.dart';
 import '../components/signup_textfield.dart';
+import 'package:dropdownfield/dropdownfield.dart';
 
-class SignUpPage1 extends StatefulWidget {
+final List<String> unis = [
+  'University of Liverpool',
+  'University of Manchester',
+  'University of Bristol',
+  'University of Durham',
+  'University of Exeter',
+];
+final uniSelected = TextEditingController();
+String selectedUniversity = '';
+
+class SignUpPage2 extends StatefulWidget {
   @override
-  _SignUpPage1State createState() => _SignUpPage1State();
+  _SignUpPage2State createState() => _SignUpPage2State();
 }
 
-class _SignUpPage1State extends State<SignUpPage1> {
+class _SignUpPage2State extends State<SignUpPage2> {
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -28,23 +38,29 @@ class _SignUpPage1State extends State<SignUpPage1> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'What is your name?',
+                      'What is your postcode?',
                       style: kSignUpTextStyle,
                     ),
                   ),
                   SignUpTextField(),
                   SizedBox(
-                    height: 40.0,
+                    height: 70.0,
                   ),
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'How old are you?',
+                      'What university do you go to?',
                       style: kSignUpTextStyle,
                     ),
                   ),
-                  SignUpTextField(
-                    keyboardType: TextInputType.number,
+                  DropDownField(
+                    controller: uniSelected,
+                    items: unis,
+                    hintText: 'Choose your University',
+                    enabled: true,
+                    onValueChanged: (val) {
+                      selectedUniversity = val;
+                    },
                   ),
                   Spacer(flex: 3),
                   Row(
@@ -52,7 +68,7 @@ class _SignUpPage1State extends State<SignUpPage1> {
                     children: <Widget>[
                       Flexible(
                         child: LinearProgressIndicator(
-                          value: 0.25,
+                          value: 0.50,
                           backgroundColor: kPurpleThemeColourTransparent,
                           valueColor:
                               AlwaysStoppedAnimation<Color>(kPurpleThemeColour),
@@ -68,12 +84,7 @@ class _SignUpPage1State extends State<SignUpPage1> {
           floatingActionButton: FloatingActionButton(
             backgroundColor: kPurpleThemeColour,
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SignUpPage2(),
-                ),
-              );
+              print('pressed');
             },
             child: Icon(Icons.chevron_right),
           ),

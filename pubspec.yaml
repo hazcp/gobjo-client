@@ -16,7 +16,7 @@ dependencies:
   http: ^0.12.2
 
   cupertino_icons: ^1.0.0
-  step_progress_indicator: ^0.2.5+8
+  dropdownfield: ^1.0.3
 
 dev_dependencies:
   flutter_test:
