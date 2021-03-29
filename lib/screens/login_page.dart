@@ -32,6 +32,10 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     TextFormField(
                       decoration: InputDecoration(labelText: 'Password'),
+                      obscureText: true,
+                      // prevent input suggestions
+                      enableSuggestions: false,
+                      autocorrect: false,
                     ),
                     Row(
                       children: <Widget>[

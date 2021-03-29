@@ -1,19 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:test_app/constants.dart';
-import '../components/background.dart';
-import '../components/signup_textfield.dart';
-import 'package:dropdownfield/dropdownfield.dart';
 
-final List<String> unis = [
-  'University of Liverpool',
-  'University of Manchester',
-  'University of Bristol',
-  'University of Durham',
-  'University of Exeter',
-];
-final uniSelected = TextEditingController();
-String selectedUniversity = '';
+import '../components/background.dart';
+import '../components/bottom_progress_row.dart';
+import '../components/next_page_button.dart';
+
+import 'signup_page3.dart';
 
 class SignUpPage2 extends StatefulWidget {
   @override
@@ -21,6 +14,27 @@ class SignUpPage2 extends StatefulWidget {
 }
 
 class _SignUpPage2State extends State<SignUpPage2> {
+  List<String> unis = [
+    'University of Liverpool',
+    'University of Manchester',
+    'University of Bristol',
+    'University of Durham',
+    'University of Exeter',
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '11',
+    '23',
+    '333',
+    '444',
+    '555',
+  ];
+  String selectedUniversity;
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -42,9 +56,18 @@ class _SignUpPage2State extends State<SignUpPage2> {
                       style: kSignUpTextStyle,
                     ),
                   ),
-                  SignUpTextField(),
+                  Padding(
+                    padding: EdgeInsets.only(top: 15),
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        labelText: '',
+                        border: OutlineInputBorder(),
+                      ),
+                      textCapitalization: TextCapitalization.characters,
+                    ),
+                  ),
                   SizedBox(
-                    height: 70.0,
+                    height: 50.0,
                   ),
                   Align(
                     alignment: Alignment.centerLeft,
@@ -53,40 +76,53 @@ class _SignUpPage2State extends State<SignUpPage2> {
                       style: kSignUpTextStyle,
                     ),
                   ),
-                  DropDownField(
-                    controller: uniSelected,
-                    items: unis,
-                    hintText: 'Choose your University',
-                    enabled: true,
-                    onValueChanged: (val) {
-                      selectedUniversity = val;
-                    },
-                  ),
-                  Spacer(flex: 3),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Flexible(
-                        child: LinearProgressIndicator(
-                          value: 0.50,
-                          backgroundColor: kPurpleThemeColourTransparent,
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(kPurpleThemeColour),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 15.0),
+                    child: DropdownButton<String>(
+                        value: selectedUniversity,
+                        hint: Text('Please choose your University'),
+                        underline: Container(
+                          height: 2,
+                          color: kPurpleThemeColour,
                         ),
-                      ),
-                      SizedBox(width: 50.0),
-                    ],
+                        isExpanded: true,
+                        items: unis.map((university) {
+                          return DropdownMenuItem(
+                            value: university,
+                            child: Text(university),
+                          );
+                        }).toList(),
+                        onChanged: (val) {
+                          setState(() {
+                            selectedUniversity = val;
+                          });
+                        }),
+                  ),
+                  // CustomDropdownButton(
+                  //     isDense: true,
+                  //     hint: Text('Select your University'),
+                  //     value: selectedUniversity,
+                  //     items: unis.map((university) {
+                  //       return DropdownMenuItem(
+                  //         value: university,
+                  //         child: Text(university),
+                  //       );
+                  //     }).toList(),
+                  //     onChanged: (val) {
+                  //       setState(() {
+                  //         selectedUniversity = val;
+                  //       });
+                  //     }),
+                  Spacer(flex: 3),
+                  BottomProgressRow(
+                    fractionProgress: 0.5,
                   ),
                 ],
               ),
             ),
           ),
-          floatingActionButton: FloatingActionButton(
-            backgroundColor: kPurpleThemeColour,
-            onPressed: () {
-              print('pressed');
-            },
-            child: Icon(Icons.chevron_right),
+          floatingActionButton: NextPageButton(
+            nextPage: SignUpPage3(),
           ),
         ),
       ],

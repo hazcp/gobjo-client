@@ -7,3 +7,8 @@ const kSignUpTextStyle = TextStyle(
   fontWeight: FontWeight.bold,
   fontSize: 24.0,
 );
+
+const kBigSignUpTextStyle = TextStyle(
+  fontWeight: FontWeight.bold,
+  fontSize: 30.0,
+);

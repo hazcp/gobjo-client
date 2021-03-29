@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/login_register_page.dart';
+import 'screens/student_home.dart';
 
 import 'api.dart';
 
@@ -11,12 +12,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: LoginRegisterPage(),
-    );
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        initialRoute: '/',
+        routes: {
+          '/': (context) => LoginRegisterPage(),
+          '/student_home': (context) => StudentHome(),
+        });
   }
 }
 
