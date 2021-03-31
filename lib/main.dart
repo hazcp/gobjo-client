@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
         routes: {
           '/': (context) => LoginRegisterPage(),
           '/student_home': (context) => StudentHome(),
+          //    '/student_search': (conext) => StudentSearch(),
         });
   }
 }

@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import '../components/background.dart';
+import '../constants.dart';
 import '../components/standard_button.dart';
+import 'signup_page1.dart';
 
-class LoginPage extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _RegisterPageState createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   bool statusSwitch = false;
 
   @override
@@ -35,15 +37,44 @@ class _LoginPageState extends State<LoginPage> {
                       enableSuggestions: false,
                       autocorrect: false,
                     ),
+                    TextFormField(
+                      decoration:
+                          InputDecoration(labelText: 'Confirm Password'),
+                      obscureText: true,
+                      // prevent input suggestions
+                      enableSuggestions: false,
+                      autocorrect: false,
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Text('Are you a Student?'),
+                        SizedBox(
+                          width: 120.0,
+                        ),
+                        SizedBox(
+                          height: 20.0,
+                        ),
+                        Switch(
+                            value: statusSwitch,
+                            activeColor: kPurpleThemeColour,
+                            onChanged: (val) {
+                              setState(() {
+                                statusSwitch = val;
+                              });
+                            }),
+                      ],
+                    ),
                     SizedBox(
                       height: 10.0,
                     ),
                     StandardButton(
-                      textButton: 'SIGN IN',
+                      textButton: 'CREATE ACCOUNT',
                       onPressed: () {
-                        Navigator.pushNamed(
+                        Navigator.push(
                           context,
-                          '/student_home',
+                          MaterialPageRoute(
+                            builder: (context) => SignUpPage1(),
+                          ),
                         );
                       },
                     ),

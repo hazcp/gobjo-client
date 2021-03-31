@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'login_page.dart';
+import 'register_page.dart';
+
 import '../components/standard_button.dart';
 import '../components/background.dart';
 
@@ -33,7 +36,12 @@ class LoginRegisterPage extends StatelessWidget {
                     StandardButton(
                       textButton: 'CREATE AN ACCOUNT',
                       onPressed: () {
-                        print('registered');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RegisterPage(),
+                          ),
+                        );
                       },
                     ),
                   ],
