@@ -27,3 +27,6 @@ flutter:
   assets:
     - assets/default_job.png
     - assets/the_background.png
+    - assets/profile_picture.png
+    - assets/full_star.png
+    - assets/half_star.png

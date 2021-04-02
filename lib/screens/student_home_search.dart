@@ -1,23 +1,23 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'student_home_contents.dart';
+import 'student_search.dart';
 
 import '../constants.dart';
 
-class StudentHome extends StatefulWidget {
+class StudentHomeSearch extends StatefulWidget {
   @override
-  _StudentHomeState createState() => _StudentHomeState();
+  _StudentHomeSearchState createState() => _StudentHomeSearchState();
 }
 
-class _StudentHomeState extends State<StudentHome> {
-  int selectedIndex = 0;
+class _StudentHomeSearchState extends State<StudentHomeSearch> {
+  int selectedIndex = 1;
 
   static List<Widget> widgetOptions = <Widget>[
     Text(
       'Jobs Page',
     ),
-    StudentHomeContents(),
+    StudentSearch(),
     Text(
       'Profile Page',
     ),

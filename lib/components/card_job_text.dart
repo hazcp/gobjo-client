@@ -27,11 +27,11 @@ class CardJobText extends StatelessWidget {
         children: <Widget>[
           Text(
             jobType,
-            style: kStudentSearchJobMain,
+            style: kMainPurpleBold,
           ),
           Text(
             jobEmployer,
-            style: kStudentSearchJobSecondaryItalics,
+            style: kSecondaryGreyItalic,
           ),
           Padding(
             padding: const EdgeInsets.only(top: 15.0),
@@ -51,7 +51,7 @@ class CardJobText extends StatelessWidget {
                         SizedBox(width: 8.0),
                         Text(
                           '~$jobFarAway miles away',
-                          style: kStudentSearchJobSecondary,
+                          style: kSecondaryGrey,
                         ),
                       ],
                     ),
@@ -64,7 +64,7 @@ class CardJobText extends StatelessWidget {
                         SizedBox(width: 8.0),
                         Text(
                           '£$jobWage an hour',
-                          style: kStudentSearchJobSecondary,
+                          style: kSecondaryGrey,
                         ),
                       ],
                     ),
@@ -77,7 +77,7 @@ class CardJobText extends StatelessWidget {
                         SizedBox(width: 8.0),
                         Text(
                           '$jobTimeFrom - $jobTimeTo',
-                          style: kStudentSearchJobSecondary,
+                          style: kSecondaryGrey,
                         ),
                       ],
                     ),

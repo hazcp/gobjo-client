@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:test_app/screens/student_profile_page.dart';
 import 'screens/login_register_page.dart';
 import 'screens/student_home.dart';
+import 'screens/student_job_page.dart';
+import 'screens/student_edit_profile.dart';
 
 import 'api.dart';
 
@@ -18,8 +21,8 @@ class MyApp extends StatelessWidget {
         ),
         initialRoute: '/',
         routes: {
-          '/': (context) => LoginRegisterPage(),
-          '/student_home': (context) => StudentHome(),
+          '/': (context) => StudentEditProfile(),
+          '/student_home': (context) => StudentProfilePage(),
           //    '/student_search': (conext) => StudentSearch(),
         });
   }

@@ -77,6 +77,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                         );
                       },
+                      colourButton: kPurpleThemeColour,
                     ),
                   ],
                 ),

@@ -9,6 +9,7 @@ const kWillingToTravelStyle = TextStyle(
   fontSize: 16.0,
 );
 
+// Sign Up Page Constants
 const kSignUpTextStyle = TextStyle(
   fontWeight: FontWeight.bold,
   fontSize: 24.0,
@@ -24,19 +25,47 @@ const kStudentHomeTextStyle = TextStyle(
   fontSize: 18.0,
 );
 
-const kStudentSearchJobMain = TextStyle(
+const kStudentJobPageMain = TextStyle(
+  fontSize: 24.0,
+  fontWeight: FontWeight.bold,
+  color: kPurpleThemeColour,
+);
+
+// Main Text Styles
+const kMainPurpleBold = TextStyle(
   fontWeight: FontWeight.bold,
   fontSize: 16.0,
   color: kPurpleThemeColour,
 );
 
-const kStudentSearchJobSecondaryItalics = TextStyle(
+const kMainGreyBItalic = TextStyle(
+  fontSize: 16.0,
+  fontWeight: FontWeight.bold,
+  fontStyle: FontStyle.italic,
+  color: kGreyColour,
+);
+
+// Secondary Text Styles
+const kSecondaryGrey = TextStyle(
+  fontSize: 14.0,
+  color: kGreyColour,
+);
+
+const kSecondaryGreyBold = TextStyle(
+  fontSize: 14.0,
+  fontWeight: FontWeight.bold,
+  color: kGreyColour,
+);
+
+const kSecondaryGreyItalic = TextStyle(
   fontStyle: FontStyle.italic,
   fontSize: 14.0,
   color: kGreyColour,
 );
 
-const kStudentSearchJobSecondary = TextStyle(
+const kSecondaryGreyBItalic = TextStyle(
+  fontWeight: FontWeight.bold,
+  fontStyle: FontStyle.italic,
   fontSize: 14.0,
   color: kGreyColour,
 );

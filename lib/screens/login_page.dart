@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../components/background.dart';
 import '../components/standard_button.dart';
+import '../constants.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -46,6 +47,7 @@ class _LoginPageState extends State<LoginPage> {
                           '/student_home',
                         );
                       },
+                      colourButton: kPurpleThemeColour,
                     ),
                   ],
                 ),

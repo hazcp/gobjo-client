@@ -4,12 +4,12 @@ import '../components/card_job.dart';
 
 import '../constants.dart';
 
-class StudentSearch extends StatefulWidget {
+class StudentSearchSafe extends StatefulWidget {
   @override
-  _StudentSearchState createState() => _StudentSearchState();
+  _StudentSearchSafeState createState() => _StudentSearchSafeState();
 }
 
-class _StudentSearchState extends State<StudentSearch> {
+class _StudentSearchSafeState extends State<StudentSearchSafe> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

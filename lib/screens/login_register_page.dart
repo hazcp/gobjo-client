@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'login_page.dart';
 import 'register_page.dart';
 
+import '../constants.dart';
+
 import '../components/standard_button.dart';
 import '../components/background.dart';
 
@@ -32,6 +34,7 @@ class LoginRegisterPage extends StatelessWidget {
                           ),
                         );
                       },
+                      colourButton: kPurpleThemeColour,
                     ),
                     StandardButton(
                       textButton: 'CREATE AN ACCOUNT',
@@ -43,6 +46,7 @@ class LoginRegisterPage extends StatelessWidget {
                           ),
                         );
                       },
+                      colourButton: kPurpleThemeColour,
                     ),
                   ],
                 ),
