@@ -1,14 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:test_app/constants.dart';
+import 'package:test_app/models/Student.dart';
 
+import '../api.dart';
 import '../components/background.dart';
 import '../components/bottom_progress_row.dart';
 import '../components/next_page_button.dart';
 
-import 'signup_page3.dart';
-
 class SignUpPage2 extends StatefulWidget {
+  SignUpPage2(this.student);
+
+  final Student student;
+
   @override
   _SignUpPage2State createState() => _SignUpPage2State();
 }
@@ -37,10 +41,14 @@ class _SignUpPage2State extends State<SignUpPage2> {
 
   @override
   Widget build(BuildContext context) {
+    final _postcodeController = TextEditingController();
+    final _ageController = TextEditingController();
+
     return Stack(
       children: <Widget>[
         Background(),
         Scaffold(
+          floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
           backgroundColor: Colors.transparent,
           body: SafeArea(
             child: Padding(
@@ -59,6 +67,7 @@ class _SignUpPage2State extends State<SignUpPage2> {
                   Padding(
                     padding: EdgeInsets.only(top: 15),
                     child: TextFormField(
+                      controller: _postcodeController,
                       decoration: InputDecoration(
                         labelText: '',
                         border: OutlineInputBorder(),
@@ -122,7 +131,14 @@ class _SignUpPage2State extends State<SignUpPage2> {
             ),
           ),
           floatingActionButton: NextPageButton(
-            nextPage: SignUpPage3(),
+            onPress: () {
+              String postcode = _postcodeController.text;
+
+              apiService.updateStudent(
+                widget.student.id,
+                {"postcode": postcode, "pageNumber": 3},
+              );
+            },
           ),
         ),
       ],

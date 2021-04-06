@@ -31,11 +31,17 @@ const kStudentJobPageMain = TextStyle(
   color: kPurpleThemeColour,
 );
 
-// Main Text Styles
+// Main Text Styles - fontSize: 16.0
 const kMainPurpleBold = TextStyle(
   fontWeight: FontWeight.bold,
   fontSize: 16.0,
   color: kPurpleThemeColour,
+);
+
+const kMainGreyBold = TextStyle(
+  fontSize: 16,
+  fontWeight: FontWeight.bold,
+  color: kGreyColour,
 );
 
 const kMainGreyBItalic = TextStyle(
@@ -45,7 +51,12 @@ const kMainGreyBItalic = TextStyle(
   color: kGreyColour,
 );
 
-// Secondary Text Styles
+// Secondary Text Styles - fontSize: 14.0
+const kSecondaryPurple = TextStyle(
+  fontSize: 14.0,
+  color: kPurpleThemeColour,
+);
+
 const kSecondaryGrey = TextStyle(
   fontSize: 14.0,
   color: kGreyColour,
@@ -69,3 +80,8 @@ const kSecondaryGreyBItalic = TextStyle(
   fontSize: 14.0,
   color: kGreyColour,
 );
+
+const String Unsave = 'Unsave';
+const String View = 'View';
+
+const List<String> savedChoices = <String>[Unsave, View];

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../constants.dart';
 
-class TopJobPage extends StatelessWidget {
-  TopJobPage();
+class TopSearchJob extends StatelessWidget {
+  TopSearchJob();
 
   @override
   Widget build(BuildContext context) {

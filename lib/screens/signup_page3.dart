@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:test_app/components/bottom_progress_row.dart';
+import 'package:test_app/models/Student.dart';
 
 import '../components/background.dart';
 import '../components/bottom_progress_row.dart';
@@ -8,6 +9,10 @@ import '../components/card_contents.dart';
 import '../constants.dart';
 
 class SignUpPage3 extends StatefulWidget {
+  SignUpPage3(this.student);
+
+  final Student student;
+
   @override
   _SignUpPage3State createState() => _SignUpPage3State();
 }

@@ -1,26 +1,25 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'student_home_contents.dart';
+import 'tab_contents/student_profile_contents.dart';
+import 'tab_contents/student_hub_contents.dart';
 
 import '../constants.dart';
 
-class StudentHome extends StatefulWidget {
+class StudentHub extends StatefulWidget {
   @override
-  _StudentHomeState createState() => _StudentHomeState();
+  _StudentHubState createState() => _StudentHubState();
 }
 
-class _StudentHomeState extends State<StudentHome> {
-  int selectedIndex = 0;
+class _StudentHubState extends State<StudentHub> {
+  int selectedIndex = 1;
 
   static List<Widget> widgetOptions = <Widget>[
     Text(
       'Jobs Page',
     ),
-    StudentHomeContents(),
-    Text(
-      'Profile Page',
-    ),
+    StudentHubContents(),
+    StudentProfileContents(),
   ];
 
   void onItemTapped(int index) {

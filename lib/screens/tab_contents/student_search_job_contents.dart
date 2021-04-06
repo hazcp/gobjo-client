@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import '../components/top_job_page.dart';
-import '../components/job_page_box.dart';
-import '../components/standard_button.dart';
-import '../constants.dart';
+import '../../components/top_search_job.dart';
+import '../../components/job_page_box.dart';
+import '../../components/standard_button.dart';
+import '../../constants.dart';
 
-class StudentJobPage extends StatefulWidget {
+class StudentSearchJobContents extends StatefulWidget {
   @override
-  _StudentJobPageState createState() => _StudentJobPageState();
+  _StudentSearchJobContentsState createState() =>
+      _StudentSearchJobContentsState();
 }
 
-class _StudentJobPageState extends State<StudentJobPage> {
+class _StudentSearchJobContentsState extends State<StudentSearchJobContents> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,7 +21,7 @@ class _StudentJobPageState extends State<StudentJobPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              TopJobPage(),
+              TopSearchJob(),
               SizedBox(height: 30),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,

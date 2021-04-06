@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import '../api.dart';
 import '../components/background.dart';
 import '../constants.dart';
 import '../components/standard_button.dart';
-import 'signup_page1.dart';
+import 'signup.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -11,6 +12,18 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   bool statusSwitch = false;
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  bool isPasswordSame(String password, String confirmPassword) {
+    if (password == confirmPassword) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +42,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   children: <Widget>[
                     TextFormField(
                       decoration: InputDecoration(labelText: 'Email Address'),
+                      controller: _emailController,
                     ),
                     TextFormField(
                       decoration: InputDecoration(labelText: 'Password'),
@@ -36,6 +50,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       // prevent input suggestions
                       enableSuggestions: false,
                       autocorrect: false,
+                      controller: _passwordController,
                     ),
                     TextFormField(
                       decoration:
@@ -44,6 +59,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       // prevent input suggestions
                       enableSuggestions: false,
                       autocorrect: false,
+                      controller: _confirmPasswordController,
                     ),
                     Row(
                       children: <Widget>[
@@ -70,12 +86,22 @@ class _RegisterPageState extends State<RegisterPage> {
                     StandardButton(
                       textButton: 'CREATE ACCOUNT',
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SignUpPage1(),
-                          ),
-                        );
+                        String email = _emailController.text;
+                        String password = _passwordController.text;
+                        String confirmPassword =
+                            _confirmPasswordController.text;
+
+                        if (isPasswordSame(password, confirmPassword)) {
+                          apiService.createStudent(email, password);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SignUp(),
+                            ),
+                          );
+                        } else {
+                          print('no sir');
+                        }
                       },
                       colourButton: kPurpleThemeColour,
                     ),

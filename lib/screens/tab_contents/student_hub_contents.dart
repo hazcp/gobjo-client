@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:test_app/screens/tab_contents/student_search_contents.dart';
 
-import '../constants.dart';
+import '../../api.dart';
 
-import '../components/standard_outlined_button.dart';
-import '../components/standard_button.dart';
-import 'student_search.dart';
+import '../../constants.dart';
 
-class StudentHomeContentsSafe extends StatefulWidget {
+import '../../components/standard_outlined_button.dart';
+import '../../components/standard_button.dart';
+
+class StudentHubContents extends StatefulWidget {
   @override
-  _StudentHomeContentsSafeState createState() =>
-      _StudentHomeContentsSafeState();
+  _StudentHubContentsState createState() => _StudentHubContentsState();
 }
 
-class _StudentHomeContentsSafeState extends State<StudentHomeContentsSafe> {
+class _StudentHubContentsState extends State<StudentHubContents> {
   bool isSelectedToday = false;
   bool isSelectedONW = false;
   int willingToTravel = 5;
@@ -124,13 +125,25 @@ class _StudentHomeContentsSafeState extends State<StudentHomeContentsSafe> {
           padding: const EdgeInsets.only(top: 40.0),
           child: StandardButton(
             textButton: 'FIND JOBS FOR ME',
-            onPressed: () {
+            onPressed: () async {
+              final jobs = await apiService.searchJobs();
+
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => StudentSearch(),
+                  builder: (context) => StudentSearchContents(jobs),
                 ),
               );
+
+              /*
+              Navigator.pushReplacement(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (context, animation1, animation2) =>
+                      StudentHubSearch(),
+                  transitionDuration: Duration(seconds: 0),
+                ),
+              );*/
             },
             colourButton: kPurpleThemeColour,
           ),
