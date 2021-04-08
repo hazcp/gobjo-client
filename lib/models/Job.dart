@@ -12,6 +12,8 @@ class Job {
   String timeTo;
   String location;
   String postcode;
+  double longitude;
+  double latitude;
   String description;
 
   Job();
@@ -29,6 +31,8 @@ class Job {
     job.timeTo = DateFormat.Hm().format(DateTime.parse(data['timeTo']));
     job.location = data['location'];
     job.postcode = data['postcode'];
+    job.longitude = data['longitude'].toDouble();
+    job.latitude = data['latitude'].toDouble();
     job.description = data['description'];
 
     return job;

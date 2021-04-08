@@ -9,8 +9,9 @@ class BottomProgressRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
+        SizedBox(width: 50.0),
         Flexible(
           child: LinearProgressIndicator(
             value: fractionProgress,

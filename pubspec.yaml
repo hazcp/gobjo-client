@@ -14,6 +14,7 @@ dependencies:
     sdk: flutter
 
   http: ^0.12.2
+  geodesy: ^0.3.2
 
   cupertino_icons: ^1.0.0
   dropdownfield: ^1.0.3

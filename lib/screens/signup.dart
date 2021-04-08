@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:test_app/screens/splash_screen.dart';
+import 'package:test_app/screens/student_home_base.dart';
 import '../api.dart';
 import '../models/Student.dart';
 import 'signup_page1.dart';
@@ -26,11 +28,15 @@ class _SignUpState extends State<SignUp> {
             return SignUpPage2(studentSnapshot.data);
           } else if (studentSnapshot.data.pageNumber == 3) {
             return SignUpPage3(studentSnapshot.data);
+          } else if (studentSnapshot.data.pageNumber == 4) {
+            return StudentHomeBase(studentSnapshot.data);
           }
+          // TODO: IMPLEMENT ADDING OF PROFILE PHOTO
+          // TODO: IMPLEMENT YOU HAVE SUCESSFULLY CREATED AN ACCOUNT
         } else {
           print('no data');
         }
-        return Text('Hello');
+        return SplashScreen();
       },
     );
   }

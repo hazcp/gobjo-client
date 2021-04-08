@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../constants.dart';
 
-class NextPageButton extends StatelessWidget {
-  NextPageButton({this.onPress});
+class PrevPageButton extends StatelessWidget {
+  PrevPageButton({this.onPress});
 
   final Function onPress;
 
@@ -11,7 +11,7 @@ class NextPageButton extends StatelessWidget {
     return FloatingActionButton(
       backgroundColor: kPurpleThemeColour,
       onPressed: onPress,
-      child: Icon(Icons.chevron_right),
+      child: Icon(Icons.chevron_left),
     );
   }
 }

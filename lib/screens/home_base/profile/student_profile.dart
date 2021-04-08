@@ -1,16 +1,56 @@
+
 import 'package:flutter/material.dart';
-import 'student_edit_profile_contents.dart';
-import '../../constants.dart';
+import 'package:test_app/models/Student.dart';
+import 'student_edit_profile.dart';
+import '../../../constants.dart';
 
-import '../../components/previous_jobs_row.dart';
-import '../../components/standard_button.dart';
+import '../../../components/previous_jobs_row.dart';
+import '../../../components/standard_button.dart';
 
-class StudentProfileContents extends StatefulWidget {
+class StudentProfile extends StatefulWidget {
+  StudentProfile({this.student});
+  final Student student;
+
   @override
-  _StudentProfileContentsState createState() => _StudentProfileContentsState();
+  _StudentProfileState createState() => _StudentProfileState();
 }
 
-class _StudentProfileContentsState extends State<StudentProfileContents> {
+class _StudentProfileState extends State<StudentProfile> {
+  String studentName;
+  String studentUniversity;
+  int studentAge;
+  bool studentIBS;
+  bool studentIW;
+  bool studentIKP;
+
+  @override
+  void initState() {
+    studentName = widget.student.name;
+    studentUniversity = widget.student.university;
+    studentAge = widget.student.age;
+    studentIBS = widget.student.isBarStaff;
+    studentIW = widget.student.isWaiter;
+    studentIKP = widget.student.isKitchenPorter;
+    super.initState();
+  }
+
+  String generateExperience() {
+    String resultantExperience = "";
+    if (studentIBS == true) {
+      resultantExperience += "Bar Staff, ";
+    }
+    if (studentIW == true) {
+      resultantExperience += "Waiter, ";
+    }
+    if (studentIKP == true) {
+      resultantExperience += "Kitchen Porter, ";
+    }
+    String resultantExperienceA =
+        resultantExperience.substring(0, resultantExperience.lastIndexOf(", "));
+
+    return resultantExperienceA;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -28,8 +68,8 @@ class _StudentProfileContentsState extends State<StudentProfileContents> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text('Harrison Porter', style: kStudentJobPageMain),
-                  Text('Student at University of Liverpool',
+                  Text('$studentName', style: kStudentJobPageMain),
+                  Text('Student at $studentUniversity',
                       style: kMainGreyBItalic),
                 ],
               ),
@@ -40,14 +80,14 @@ class _StudentProfileContentsState extends State<StudentProfileContents> {
         Row(
           children: <Widget>[
             Text('Age: ', style: kSecondaryGreyBold),
-            Text('21', style: kSecondaryGrey),
+            Text('$studentAge', style: kSecondaryGrey),
           ],
         ),
         SizedBox(height: 7),
         Row(
           children: <Widget>[
             Text('Experience: ', style: kSecondaryGreyBold),
-            Text('Bar Staff, Waiter', style: kSecondaryGrey),
+            Text(generateExperience(), style: kSecondaryGrey),
           ],
         ),
         SizedBox(height: 25),

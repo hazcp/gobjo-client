@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'models/Student.dart';
 
 class APIService {
-  final ngrokUrl = "https://7483f2324d00.ngrok.io";
+  final ngrokUrl = "https://36a0982ad3d0.ngrok.io";
 
   final StreamController<Student> studentStream =
       StreamController<Student>.broadcast();
@@ -50,16 +50,53 @@ class APIService {
     return null;
   }
 
-  Future<List<Job>> searchJobs() async {
-    http.Response response = await http
-        .get('$ngrokUrl/job/search?distance=5.3&when=today&userId=123');
-    final searchResultJSON = jsonDecode(response.body);
+  Future<List<Job>> searchJobs(String postcode) async {
+    var url = Uri.encodeFull('$ngrokUrl/job/search?$postcode');
+    //    '$ngrokUrl/job/search?upperLat=$upperLat&lowerLat=$lowerLat&upperLong=$upperLong&lowerLong=$lowerLong');
+    http.Response response = await http.get(url);
+
     List<Job> jobs = [];
-    searchResultJSON.forEach((job) {
+    final searchResultsJSON = jsonDecode(response.body);
+    searchResultsJSON.forEach((job) {
       jobs.add(Job.fromJson(data: job));
+      print(job);
     });
-    print(jobs);
     return jobs;
+    // String upperLat, String lowerLat,
+    //       String upperLong, String lowerLong
+  }
+
+  Future<bool> isValidPostcode(String postcode) async {
+    bool isValid;
+    var url =
+        Uri.encodeFull('https://api.postcodes.io/postcodes/$postcode/validate');
+    http.Response response = await http.get(url);
+    if (response.statusCode == 200) {
+      final parsedJson = jsonDecode(response.body);
+      isValid = parsedJson["result"];
+      return isValid;
+    } else {
+      isValid = false;
+      return isValid;
+    }
+  }
+
+  Future<List<double>> postCodeToLatLong(String postcode) async {
+    List<double> latLongList = [];
+    var url = Uri.encodeFull('https://api.postcodes.io/postcodes/$postcode');
+    http.Response response = await http.get(url);
+    if (response.statusCode == 200) {
+      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      var latitude = parsedJson["result"]["latitude"];
+      var longitude = parsedJson["result"]["longitude"];
+      // longLatList -> [latitudePostcode, longitudePostcode]
+      latLongList.add(latitude);
+      latLongList.add(longitude);
+      return latLongList;
+    } else {
+      print('Couldnt convert to long lat');
+    }
+    return null;
   }
 }
 

@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 
-import '../../components/card_job.dart';
+import '../../../components/card_job.dart';
 
-import '../../constants.dart';
+import '../../../constants.dart';
 
-import '../../models/Job.dart';
+import '../../../models/Job.dart';
 
-class StudentSearchContents extends StatefulWidget {
-  StudentSearchContents(this.jobList);
+class StudentSearchList extends StatefulWidget {
+  StudentSearchList(this.jobList);
 
   final List<Job> jobList;
 
   @override
-  _StudentSearchContentsState createState() => _StudentSearchContentsState();
+  _StudentSearchListState createState() => _StudentSearchListState();
 }
 
-class _StudentSearchContentsState extends State<StudentSearchContents> {
+class _StudentSearchListState extends State<StudentSearchList> {
   List<Widget> generateJobCards() {
     List<Widget> jobCardWidgets = [];
     for (int i = 0; i < widget.jobList.length; i++) {

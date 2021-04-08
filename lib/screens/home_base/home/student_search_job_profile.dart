@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import '../../components/top_search_job.dart';
-import '../../components/job_page_box.dart';
-import '../../components/standard_button.dart';
-import '../../constants.dart';
+import '../../../components/top_search_job.dart';
+import '../../../components/job_page_box.dart';
+import '../../../components/standard_button.dart';
+import '../../../constants.dart';
 
-class StudentSearchJobContents extends StatefulWidget {
+class StudentSearchJobProfile extends StatefulWidget {
   @override
-  _StudentSearchJobContentsState createState() =>
-      _StudentSearchJobContentsState();
+  _StudentSearchJobProfileState createState() =>
+      _StudentSearchJobProfileState();
 }
 
-class _StudentSearchJobContentsState extends State<StudentSearchJobContents> {
+class _StudentSearchJobProfileState extends State<StudentSearchJobProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

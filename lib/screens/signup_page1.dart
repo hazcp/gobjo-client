@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:test_app/components/bottom_progress_row.dart';
 import 'package:test_app/constants.dart';
 import 'package:test_app/models/Student.dart';
 import '../api.dart';
@@ -73,19 +74,8 @@ class _SignUpPage1State extends State<SignUpPage1> {
                     textController: _ageController,
                   ),
                   Spacer(flex: 3),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Flexible(
-                        child: LinearProgressIndicator(
-                          value: 0.25,
-                          backgroundColor: kPurpleThemeColourTransparent,
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(kPurpleThemeColour),
-                        ),
-                      ),
-                      SizedBox(width: 50.0),
-                    ],
+                  BottomProgressRow(
+                    fractionProgress: 0.25,
                   ),
                 ],
               ),

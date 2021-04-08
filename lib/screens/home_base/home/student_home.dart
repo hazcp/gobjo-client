@@ -1,23 +1,53 @@
 import 'package:flutter/material.dart';
-import 'package:test_app/screens/tab_contents/student_search_contents.dart';
+import 'package:test_app/models/Student.dart';
 
-import '../../api.dart';
+import '../../../api.dart';
+import 'package:geodesy/geodesy.dart';
+import '../../../constants.dart';
 
-import '../../constants.dart';
+import '../../../components/standard_outlined_button.dart';
+import '../../../components/standard_button.dart';
 
-import '../../components/standard_outlined_button.dart';
-import '../../components/standard_button.dart';
+class StudentHome extends StatefulWidget {
+  StudentHome({this.student});
+  final Student student;
 
-class StudentHubContents extends StatefulWidget {
   @override
-  _StudentHubContentsState createState() => _StudentHubContentsState();
+  _StudentHomeState createState() => _StudentHomeState();
 }
 
-class _StudentHubContentsState extends State<StudentHubContents> {
+class _StudentHomeState extends State<StudentHome> {
   bool isSelectedToday = false;
   bool isSelectedONW = false;
-  int willingToTravel = 5;
-  String willingToTravelString = 'Up to 5 miles away';
+  double willingToTravel = 2.5;
+  String willingToTravelString = 'Up to 2.5 km away';
+  Geodesy geodesy = Geodesy();
+  List<double>
+      latLongRange; // [latUpperOfRange, longUpperOfRange, latLowerOfRange, longLowerOfRange]
+
+  List<double> generateLatLongRange(
+      {double specifiedDistanceKm, List<double> latLongOfPostcode}) {
+    List<double> latLongRange = [];
+    double specifiedDistanceToMetres = specifiedDistanceKm * 1000;
+    double postcodeLatitude = latLongOfPostcode[0];
+    double postcodeLongitude = latLongOfPostcode[1];
+
+    LatLng postcodeLatLong = LatLng(postcodeLatitude, postcodeLongitude);
+    for (int i = 0; i < 5; i++) {
+      LatLng destinationPoint = geodesy.destinationPointByDistanceAndBearing(
+          postcodeLatLong, specifiedDistanceToMetres, i * 90.0);
+      if (i % 2 == 0) {
+        // if bearing is north or south (aka longitude is constant)
+        double lat = destinationPoint.latitude;
+        latLongRange.add(lat);
+      } else {
+        // if bearing is east or west (aka latitude is constant)
+        double long = destinationPoint.longitude;
+        latLongRange.add(long);
+      }
+    }
+    return latLongRange;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,18 +127,18 @@ class _StudentHubContentsState extends State<StudentHubContents> {
           ),
           child: Slider(
             value: willingToTravel.toDouble(),
-            min: 1.0,
-            max: 10.0,
+            min: 0.5,
+            max: 5.0,
+            divisions: 9,
             onChanged: (double newValue) {
               setState(() {
-                willingToTravel = newValue.round();
-                if (willingToTravel == 10) {
-                  willingToTravelString = 'Greater than 10 miles away';
-                } else if (willingToTravel == 1) {
-                  willingToTravelString =
-                      'Less than $willingToTravel mile away';
+                willingToTravel = newValue;
+                if (willingToTravel == 5) {
+                  willingToTravelString = 'Greater than 5.0 km away';
+                } else if (willingToTravel == 0.5) {
+                  willingToTravelString = 'Less than $willingToTravel km away';
                 } else {
-                  willingToTravelString = 'Up to $willingToTravel miles away';
+                  willingToTravelString = 'Up to $willingToTravel km away';
                 }
               });
             },
@@ -126,14 +156,37 @@ class _StudentHubContentsState extends State<StudentHubContents> {
           child: StandardButton(
             textButton: 'FIND JOBS FOR ME',
             onPressed: () async {
-              final jobs = await apiService.searchJobs();
+              // get lat long of student's postcode in a list with format: [lat, long]
+              final latLongList =
+                  await apiService.postCodeToLatLong(widget.student.postcode);
 
-              Navigator.push(
+              latLongRange = generateLatLongRange(
+                latLongOfPostcode: latLongList,
+                specifiedDistanceKm: willingToTravel,
+              );
+              String upperLat = latLongRange[0].toString();
+              String upperLong = latLongRange[1].toString();
+              String lowerLat = latLongRange[2].toString();
+              String lowerLong = latLongRange[3].toString();
+
+              print('Upper Lat Range: ' + upperLat.toString());
+              print('Lower Lat Range: ' + lowerLat.toString());
+              print('Upper Long Range: ' + upperLong.toString());
+              print('Lower Long Range: ' + lowerLong.toString());
+
+              // final jobs = await apiService.searchJobs(
+              //     upperLat, lowerLat, upperLong, lowerLong);
+              final jobs = await apiService.searchJobs("Location1");
+              for (var job in jobs) {
+                print(job.employer.toString());
+              }
+
+/*              Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => StudentSearchContents(jobs),
+                  builder: (context) => StudentSearchList(jobs),
                 ),
-              );
+              );*/
 
               /*
               Navigator.pushReplacement(

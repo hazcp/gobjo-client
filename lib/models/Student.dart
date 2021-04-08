@@ -7,7 +7,9 @@ class Student {
   int age;
   String postcode;
   String university;
-
+  bool isBarStaff;
+  bool isKitchenPorter;
+  bool isWaiter;
   Student();
 
   factory Student.fromJson({Map<dynamic, dynamic> data}) {
@@ -20,6 +22,9 @@ class Student {
     student.age = data['age'];
     student.postcode = data['postcode'];
     student.university = data['university'];
+    student.isBarStaff = data['isBarStaff'];
+    student.isKitchenPorter = data['isKitchenPorter'];
+    student.isWaiter = data['isWaiter'];
     return student;
   }
 }

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:test_app/components/bottom_progress_row.dart';
+import 'package:test_app/components/next_page_button.dart';
+import 'package:test_app/components/prev_page_button.dart';
 import 'package:test_app/models/Student.dart';
+
+import '../api.dart';
 
 import '../components/background.dart';
 import '../components/bottom_progress_row.dart';
@@ -18,10 +22,19 @@ class SignUpPage3 extends StatefulWidget {
 }
 
 class _SignUpPage3State extends State<SignUpPage3> {
-  bool isSelectedTwo = false; // change this when have time
-  bool isSelectedOne = false; // change this when have time
-  bool isSelectedThree = false; // change this when have time
+  bool isBarStaff = false; // change this when have time
+  bool isKitchenPorter = false; // change this when have time
+  bool isWaiter = false; // change this when have time
   Color cardColour = Colors.white;
+  String studentFirstName;
+
+  @override
+  void initState() {
+    String studentName = widget.student.name;
+    var parts = studentName.split(" ");
+    studentFirstName = parts[0].trim();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +52,7 @@ class _SignUpPage3State extends State<SignUpPage3> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Hi Haz,', // use first name here
+                      'Hi $studentFirstName,', // use first name here
                       style: kBigSignUpTextStyle,
                     ),
                   ),
@@ -59,7 +72,7 @@ class _SignUpPage3State extends State<SignUpPage3> {
                         Card(
                           shape: RoundedRectangleBorder(
                             side: BorderSide(
-                              color: isSelectedOne
+                              color: isBarStaff
                                   ? kPurpleThemeColour
                                   : Colors.white,
                               width: 2,
@@ -71,10 +84,10 @@ class _SignUpPage3State extends State<SignUpPage3> {
                             splashColor: kPurpleThemeColour,
                             onTap: () {
                               setState(() {
-                                if (!isSelectedOne) {
-                                  isSelectedOne = true;
+                                if (!isBarStaff) {
+                                  isBarStaff = true;
                                 } else {
-                                  isSelectedOne = false;
+                                  isBarStaff = false;
                                 }
                               });
                             },
@@ -87,7 +100,7 @@ class _SignUpPage3State extends State<SignUpPage3> {
                         Card(
                           shape: RoundedRectangleBorder(
                             side: BorderSide(
-                              color: isSelectedTwo
+                              color: isKitchenPorter
                                   ? kPurpleThemeColour
                                   : Colors.white,
                               width: 2,
@@ -99,10 +112,10 @@ class _SignUpPage3State extends State<SignUpPage3> {
                             splashColor: kPurpleThemeColour,
                             onTap: () {
                               setState(() {
-                                if (!isSelectedTwo) {
-                                  isSelectedTwo = true;
+                                if (!isKitchenPorter) {
+                                  isKitchenPorter = true;
                                 } else {
-                                  isSelectedTwo = false;
+                                  isKitchenPorter = false;
                                 }
                               });
                             },
@@ -115,9 +128,8 @@ class _SignUpPage3State extends State<SignUpPage3> {
                         Card(
                           shape: RoundedRectangleBorder(
                             side: BorderSide(
-                              color: isSelectedThree
-                                  ? kPurpleThemeColour
-                                  : Colors.white,
+                              color:
+                                  isWaiter ? kPurpleThemeColour : Colors.white,
                               width: 2,
                             ),
                             borderRadius: BorderRadius.circular(4.0),
@@ -127,10 +139,10 @@ class _SignUpPage3State extends State<SignUpPage3> {
                             splashColor: kPurpleThemeColour,
                             onTap: () {
                               setState(() {
-                                if (!isSelectedThree) {
-                                  isSelectedThree = true;
+                                if (!isWaiter) {
+                                  isWaiter = true;
                                 } else {
-                                  isSelectedThree = false;
+                                  isWaiter = false;
                                 }
                               });
                             },
@@ -151,15 +163,40 @@ class _SignUpPage3State extends State<SignUpPage3> {
               ),
             ),
           ),
-          floatingActionButton: FloatingActionButton(
-            child: Icon(Icons.chevron_right),
-            backgroundColor: kPurpleThemeColour,
-            onPressed: () {
-              Navigator.pushNamed(
-                context,
-                '/student_home',
-              );
-            },
+          floatingActionButton: Padding(
+            padding: EdgeInsets.only(left: 35),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: PrevPageButton(
+                    onPress: () {
+                      apiService.updateStudent(
+                        widget.student.id,
+                        {"pageNumber": 2},
+                      );
+                    },
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: NextPageButton(
+                    onPress: () {
+                      apiService.updateStudent(
+                        widget.student.id,
+                        {
+                          "isBarStaff": isBarStaff,
+                          "isKitchenPorter": isKitchenPorter,
+                          "isWaiter": isWaiter,
+                          "pageNumber": 4
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],
