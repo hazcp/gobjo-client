@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:test_app/models/Job.dart';
 import 'package:test_app/models/Student.dart';
+import 'package:test_app/screens/home_base/home/student_search_list.dart';
 
 import '../../../api.dart';
 import 'package:geodesy/geodesy.dart';
@@ -17,40 +19,109 @@ class StudentHome extends StatefulWidget {
 }
 
 class _StudentHomeState extends State<StudentHome> {
-  bool isSelectedToday = false;
-  bool isSelectedONW = false;
-  double willingToTravel = 2.5;
-  String willingToTravelString = 'Up to 2.5 km away';
+  bool isSelectedToday;
+  bool isSelectedONW;
+  double willingToTravel;
+  String willingToTravelString;
+  bool isSearching;
+  List<Job> jobs;
+  List<Job> finalJobs;
   Geodesy geodesy = Geodesy();
-  List<double>
-      latLongRange; // [latUpperOfRange, longUpperOfRange, latLowerOfRange, longLowerOfRange]
 
-  List<double> generateLatLongRange(
-      {double specifiedDistanceKm, List<double> latLongOfPostcode}) {
-    List<double> latLongRange = [];
-    double specifiedDistanceToMetres = specifiedDistanceKm * 1000;
-    double postcodeLatitude = latLongOfPostcode[0];
-    double postcodeLongitude = latLongOfPostcode[1];
+  Student student;
+  String prevSearchTimeRange;
+  String prevSearchFarAwayRange;
 
-    LatLng postcodeLatLong = LatLng(postcodeLatitude, postcodeLongitude);
-    for (int i = 0; i < 5; i++) {
-      LatLng destinationPoint = geodesy.destinationPointByDistanceAndBearing(
-          postcodeLatLong, specifiedDistanceToMetres, i * 90.0);
-      if (i % 2 == 0) {
-        // if bearing is north or south (aka longitude is constant)
-        double lat = destinationPoint.latitude;
-        latLongRange.add(lat);
-      } else {
-        // if bearing is east or west (aka latitude is constant)
-        double long = destinationPoint.longitude;
-        latLongRange.add(long);
-      }
+  // List<double> generateLatLongRange(
+  //     {double specifiedDistanceKm, List<double> latLongOfPostcode}) {
+  //   List<double> latLongRange = [];
+  //   double specifiedDistanceToMetres = specifiedDistanceKm * 1000;
+  //   double postcodeLatitude = latLongOfPostcode[0];
+  //   double postcodeLongitude = latLongOfPostcode[1];
+  //
+  //   LatLng postcodeLatLong = LatLng(postcodeLatitude, postcodeLongitude);
+  //   for (int i = 0; i < 5; i++) {
+  //     LatLng destinationPoint = geodesy.destinationPointByDistanceAndBearing(
+  //         postcodeLatLong, specifiedDistanceToMetres, i * 90.0);
+  //     if (i % 2 == 0) {
+  //       // if bearing is north or south (aka longitude is constant)
+  //       double lat = destinationPoint.latitude;
+  //       latLongRange.add(lat);
+  //     } else {
+  //       // if bearing is east or west (aka latitude is constant)
+  //       double long = destinationPoint.longitude;
+  //       latLongRange.add(long);
+  //     }
+  //   }
+  //   return latLongRange;
+  // }
+
+  Future<List<Job>> sortAndCalcDistanceJobs(
+      List<Job> initialJobList, double specifiedDistance) async {
+    List<Job> finalJobList = [];
+    // get lat long of student's postcode in a list with format: [lat, long]
+    final latLongPostcode =
+        await apiService.postCodeToLatLong(widget.student.postcode);
+    LatLng postcodeLatLng = LatLng(latLongPostcode[0], latLongPostcode[1]);
+
+    for (int i = 0; i < initialJobList.length; i++) {
+      Job currJob = initialJobList[i];
+      LatLng currJobLatLng = LatLng(currJob.latitude, currJob.longitude);
+      double distanceBetween = double.parse(
+          (geodesy.distanceBetweenTwoGeoPoints(currJobLatLng, postcodeLatLng) /
+                  1000)
+              .toStringAsFixed(2));
+      print(distanceBetween);
+
+      currJob.distanceToPostcode = distanceBetween;
+      finalJobList.add(currJob);
+      // sort by distance closest to furthest?
+      // if (distanceBetween < specifiedDistance && firstTime) {
+      //   finalJobList.add(currJob);
+      //   firstTime = false;
+      // } else if (distanceBetween < specifiedDistance) {
+      //   for(int i = 0; i < finalJobList.length; i++) {
+      //
+      //   }
+      // }
     }
-    return latLongRange;
+    return finalJobList;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    student = widget.student;
+    prevSearchTimeRange = student.prevSearchTimeRange;
+    prevSearchFarAwayRange = student.prevSearchFarAwayRange;
+
+    if (prevSearchTimeRange == null && prevSearchFarAwayRange == null) {
+      willingToTravel = 2.5;
+      willingToTravelString = 'Up to 2.5 km away';
+      isSelectedToday = false;
+      isSelectedONW = false;
+    } else {
+      if (prevSearchTimeRange == "Today") {
+        isSelectedToday = true;
+        isSelectedONW = false;
+      } else {
+        isSelectedONW = true;
+        isSelectedToday = false;
+      }
+      willingToTravel = double.parse(prevSearchFarAwayRange);
+      willingToTravelString = 'Up to $willingToTravel km away';
+    }
+    isSearching = false;
   }
 
   @override
   Widget build(BuildContext context) {
+    return Stack(children: <Widget>[
+      !isSearching ? buildHome() : StudentSearchList(finalJobs, widget.student),
+    ]);
+  }
+
+  Widget buildHome() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -156,47 +227,35 @@ class _StudentHomeState extends State<StudentHome> {
           child: StandardButton(
             textButton: 'FIND JOBS FOR ME',
             onPressed: () async {
-              // get lat long of student's postcode in a list with format: [lat, long]
-              final latLongList =
-                  await apiService.postCodeToLatLong(widget.student.postcode);
-
-              latLongRange = generateLatLongRange(
-                latLongOfPostcode: latLongList,
-                specifiedDistanceKm: willingToTravel,
-              );
-              String upperLat = latLongRange[0].toString();
-              String upperLong = latLongRange[1].toString();
-              String lowerLat = latLongRange[2].toString();
-              String lowerLong = latLongRange[3].toString();
-
-              print('Upper Lat Range: ' + upperLat.toString());
-              print('Lower Lat Range: ' + lowerLat.toString());
-              print('Upper Long Range: ' + upperLong.toString());
-              print('Lower Long Range: ' + lowerLong.toString());
-
-              // final jobs = await apiService.searchJobs(
-              //     upperLat, lowerLat, upperLong, lowerLong);
-              final jobs = await apiService.searchJobs("Location1");
-              for (var job in jobs) {
-                print(job.employer.toString());
+              if (isSelectedToday) {
+                prevSearchTimeRange = "Today";
+              } else {
+                prevSearchTimeRange = "ONW";
               }
 
-/*              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => StudentSearchList(jobs),
-                ),
-              );*/
+              prevSearchFarAwayRange = willingToTravel.toString();
 
-              /*
-              Navigator.pushReplacement(
-                context,
-                PageRouteBuilder(
-                  pageBuilder: (context, animation1, animation2) =>
-                      StudentHubSearch(),
-                  transitionDuration: Duration(seconds: 0),
-                ),
-              );*/
+              apiService.updateStudent(
+                widget.student.id,
+                {
+                  "prevSearchTimeRange": prevSearchTimeRange,
+                  "prevSearchFarAwayRange": prevSearchFarAwayRange
+                },
+              );
+
+              jobs = await apiService.searchJobs(widget.student.postcode,
+                  willingToTravel.toString(), isSelectedToday);
+
+              finalJobs = await sortAndCalcDistanceJobs(jobs, willingToTravel);
+
+              for (var job in finalJobs) {
+                print(job.employer.toString());
+                print(job.distanceToPostcode.toString());
+              }
+
+              setState(() {
+                isSearching = true;
+              });
             },
             colourButton: kPurpleThemeColour,
           ),

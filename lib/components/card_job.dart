@@ -40,9 +40,8 @@ class JobCard extends StatelessWidget {
             jobTimeTo: jobTimeTo,
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 45),
-            child: Icon(Icons.bookmark),
-          ),
+              padding: EdgeInsets.only(left: 40.0),
+              child: Icon(Icons.bookmark)),
         ],
       ),
     );

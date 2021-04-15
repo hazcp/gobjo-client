@@ -1,10 +1,7 @@
 import 'package:intl/intl.dart';
 
 class Job {
-  double distance;
-  String userId;
-  String when;
-
+  String id;
   String title;
   String employer;
   double wage;
@@ -15,14 +12,13 @@ class Job {
   double longitude;
   double latitude;
   String description;
+  double distanceToPostcode;
 
   Job();
 
   factory Job.fromJson({Map<dynamic, dynamic> data}) {
     Job job = Job();
-    job.distance = data['distance'];
-    job.userId = data['userId'];
-    job.when = data['when'];
+    job.id = data['_id'];
     job.title = data['title'];
     job.employer = data['employer'];
     job.wage = data['wage'].toDouble();

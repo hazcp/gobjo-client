@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'models/Student.dart';
 
 class APIService {
-  final ngrokUrl = "https://36a0982ad3d0.ngrok.io";
+  final ngrokUrl = "https://d76452cce766.ngrok.io";
 
   final StreamController<Student> studentStream =
       StreamController<Student>.broadcast();
@@ -50,11 +50,33 @@ class APIService {
     return null;
   }
 
-  Future<List<Job>> searchJobs(String postcode) async {
-    var url = Uri.encodeFull('$ngrokUrl/job/search?$postcode');
-    //    '$ngrokUrl/job/search?upperLat=$upperLat&lowerLat=$lowerLat&upperLong=$upperLong&lowerLong=$lowerLong');
-    http.Response response = await http.get(url);
+  // Future<List<Job>> searchJobs(String upperLat, String lowerLat,
+  //     String upperLong, String lowerLong) async {
+  //   var url = Uri.encodeFull(
+  //       '$ngrokUrl/job/search?upperLat=$upperLat&lowerLat=$lowerLat&upperLong=$upperLong&lowerLong=$lowerLong');
+  //   http.Response response = await http.get(url);
+  //
+  //   List<Job> jobs = [];
+  //   final searchResultsJSON = jsonDecode(response.body);
+  //   searchResultsJSON.forEach((job) {
+  //     jobs.add(Job.fromJson(data: job));
+  //     print(job);
+  //   });
+  //   return jobs;
+  // }
 
+  Future<List<Job>> searchJobs(
+    String postcode,
+    String specifiedDistanceKm,
+    bool isToday,
+  ) async {
+    double specifiedDistanceM =
+        1000 * double.parse(specifiedDistanceKm); // km -> m
+    String specifiedDistanceMString = specifiedDistanceM.toString();
+    var url = Uri.encodeFull(
+        '$ngrokUrl/job/search?postcode=$postcode&specifiedDistance=$specifiedDistanceMString&isToday=$isToday');
+
+    http.Response response = await http.get(url);
     List<Job> jobs = [];
     final searchResultsJSON = jsonDecode(response.body);
     searchResultsJSON.forEach((job) {
@@ -62,8 +84,6 @@ class APIService {
       print(job);
     });
     return jobs;
-    // String upperLat, String lowerLat,
-    //       String upperLong, String lowerLong
   }
 
   Future<bool> isValidPostcode(String postcode) async {

@@ -10,6 +10,9 @@ class Student {
   bool isBarStaff;
   bool isKitchenPorter;
   bool isWaiter;
+  String prevSearchTimeRange;
+  String prevSearchFarAwayRange;
+
   Student();
 
   factory Student.fromJson({Map<dynamic, dynamic> data}) {
@@ -25,6 +28,8 @@ class Student {
     student.isBarStaff = data['isBarStaff'];
     student.isKitchenPorter = data['isKitchenPorter'];
     student.isWaiter = data['isWaiter'];
+    student.prevSearchTimeRange = data['prevSearchTimeRange'];
+    student.prevSearchFarAwayRange = data['prevSearchFarAwayRange'];
     return student;
   }
 }

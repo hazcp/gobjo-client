@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:test_app/components/standard_button.dart';
+import 'package:test_app/models/Student.dart';
+import 'package:test_app/screens/home_base/home/student_home.dart';
 
 import '../../../components/card_job.dart';
 
@@ -7,15 +10,22 @@ import '../../../constants.dart';
 import '../../../models/Job.dart';
 
 class StudentSearchList extends StatefulWidget {
-  StudentSearchList(this.jobList);
+  StudentSearchList(this.jobList, this.student);
 
   final List<Job> jobList;
+  final Student student;
 
   @override
   _StudentSearchListState createState() => _StudentSearchListState();
 }
 
 class _StudentSearchListState extends State<StudentSearchList> {
+  List<Job> jobList;
+  int lengthJobList;
+  bool jobListIsEmpty;
+  Student student;
+  bool goBack = false;
+
   List<Widget> generateJobCards() {
     List<Widget> jobCardWidgets = [];
     for (int i = 0; i < widget.jobList.length; i++) {
@@ -24,7 +34,7 @@ class _StudentSearchListState extends State<StudentSearchList> {
         pictureName: 'default_job.png',
         jobType: thisJob.title,
         jobEmployer: thisJob.employer,
-        jobFarAway: 2.5,
+        jobFarAway: thisJob.distanceToPostcode,
         jobWage: thisJob.wage,
         jobTimeFrom: thisJob.timeFrom,
         jobTimeTo: thisJob.timeTo,
@@ -42,7 +52,32 @@ class _StudentSearchListState extends State<StudentSearchList> {
   }
 
   @override
+  void initState() {
+    student = widget.student;
+    jobList = widget.jobList;
+    lengthJobList = jobList.length;
+    if (lengthJobList != 0) {
+      jobListIsEmpty = false;
+    } else {
+      jobListIsEmpty = true;
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    return Stack(children: <Widget>[
+      !goBack
+          ? (!jobListIsEmpty ? buildJobList() : buildNoJobsAvailable())
+          : StudentHome(student: student),
+      //   !jobListIsEmpty
+      //   ? buildJobList()
+      //   : buildNoJobsAvailable(
+      //TODO: sort by distance closest to furthest
+    ]);
+  }
+
+  Widget buildJobList() {
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -56,75 +91,33 @@ class _StudentSearchListState extends State<StudentSearchList> {
               child: ListView(
                 children: generateJobCards(),
               ),
-              //   JobCard(
-              //     pictureName: 'default_job.png',
-              //     jobType: 'Bar Staff',
-              //     jobEmployer: 'Weatherspoons',
-              //     jobFarAway: 3.4,
-              //     jobWage: 9.50,
-              //     jobTimeFrom: '23:00',
-              //     jobTimeTo: '06:30',
-              //   ),
-              //   Divider(
-              //     height: 50.0,
-              //   ),
-              //   JobCard(
-              //     pictureName: 'default_job.png',
-              //     jobType: 'Bar Staff',
-              //     jobEmployer: 'The Kings Hand',
-              //     jobFarAway: 6,
-              //     jobWage: 12.50,
-              //     jobTimeFrom: '10:00',
-              //     jobTimeTo: '19:00',
-              //   ),
-              //   Divider(
-              //     height: 50.0,
-              //   ),
-              //   JobCard(
-              //     pictureName: 'default_job.png',
-              //     jobType: 'Bar Staff',
-              //     jobEmployer: 'Archie\'s Bar',
-              //     jobFarAway: 2.5,
-              //     jobWage: 8,
-              //     jobTimeFrom: '15:00',
-              //     jobTimeTo: '23:30',
-              //   ),
-              //   Divider(
-              //     height: 50.0,
-              //   ),
-              //   JobCard(
-              //     pictureName: 'default_job.png',
-              //     jobType: 'Bar Staff',
-              //     jobEmployer: 'Archie\'s Bar',
-              //     jobFarAway: 2.5,
-              //     jobWage: 8,
-              //     jobTimeFrom: '15:00',
-              //     jobTimeTo: '23:30',
-              //   ),
-              //   Divider(
-              //     height: 50.0,
-              //   ),
-              //   JobCard(
-              //     pictureName: 'default_job.png',
-              //     jobType: 'Bar Staff',
-              //     jobEmployer: 'Archie\'s Bar',
-              //     jobFarAway: 2.5,
-              //     jobWage: 8,
-              //     jobTimeFrom: '15:00',
-              //     jobTimeTo: '23:30',
-              //   ),
-              //   Divider(
-              //     height: 50.0,
-              //   ),
-              //   JobCard(
-              //     pictureName: 'default_job.png',
-              //     jobType: 'Bar Staff',
-              //     jobEmployer: 'Archie\'s Bar',
-              //     jobFarAway: 2.5,
-              //     jobWage: 8,
-              //     jobTimeFrom: '15:00',
-              //     jobTimeTo: '23:30',
-              //   ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildNoJobsAvailable() {
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'There are no jobs available with those search parameters.',
+              style: kStudentHomeTextStyle,
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 30),
+            StandardButton(
+              textButton: 'SEARCH AGAIN',
+              onPressed: () {
+                setState(() {
+                  goBack = true;
+                });
+              },
+              colourButton: kPurpleThemeColour,
             ),
           ],
         ),

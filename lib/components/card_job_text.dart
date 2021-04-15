@@ -29,9 +29,12 @@ class CardJobText extends StatelessWidget {
             jobType,
             style: kMainPurpleBold,
           ),
-          Text(
-            jobEmployer,
-            style: kSecondaryGreyItalic,
+          Container(
+            width: 134.0,
+            child: Text(
+              jobEmployer,
+              style: kSecondaryGreyItalic,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.only(top: 15.0),

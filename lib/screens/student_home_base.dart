@@ -19,22 +19,7 @@ class StudentHomeBase extends StatefulWidget {
 
 class _StudentHomeBaseState extends State<StudentHomeBase> {
   int selectedTabIndex = 1;
-  bool firstTime = true;
   PageController pageController;
-
-/*  static List<Widget> widgetOptions = <Widget>[
-    Text(
-      'Jobs Page',
-    ),
-    StudentHubContents(),
-    StudentProfileContents(),
-  ];*/
-
-  void onItemTapped(int index) {
-    setState(() {
-      selectedTabIndex = index;
-    });
-  }
 
   @override
   void initState() {
@@ -45,15 +30,17 @@ class _StudentHomeBaseState extends State<StudentHomeBase> {
 
   @override
   Widget build(BuildContext context) {
-    final ft = firstTime;
-    firstTime = false;
-
     return Scaffold(
       body: SafeArea(
         child: PageView(
           controller: pageController,
           // pageSnapping: true,
           // physics: NeverScrollableScrollPhysics(),
+          onPageChanged: (index) {
+            setState(() {
+              selectedTabIndex = index;
+            });
+          },
           children: <Widget>[
             Padding(
                 padding: EdgeInsets.all(41.0),
@@ -87,7 +74,14 @@ class _StudentHomeBaseState extends State<StudentHomeBase> {
           ),
         ],
         currentIndex: selectedTabIndex,
-        onTap: onItemTapped,
+        onTap: (index) {
+          setState(() {
+            selectedTabIndex = index;
+            pageController.animateToPage(selectedTabIndex,
+                duration: Duration(milliseconds: 250),
+                curve: Curves.fastOutSlowIn);
+          });
+        },
       ),
     );
   }
