@@ -1,5 +1,3 @@
-import 'package:intl/intl.dart';
-
 class Job {
   String id;
   String title;
@@ -22,9 +20,8 @@ class Job {
     job.title = data['title'];
     job.employer = data['employer'];
     job.wage = data['wage'].toDouble();
-    job.timeFrom = DateFormat.Hm().format(DateTime.parse(data[
-        'timeFrom'])); // parses ISO8601 format into datetime format, and uses intl to change into readable time
-    job.timeTo = DateFormat.Hm().format(DateTime.parse(data['timeTo']));
+    job.timeFrom = data['timeFrom'];
+    job.timeTo = data['timeTo'];
     job.location = data['location'];
     job.postcode = data['postcode'];
     job.longitude = data['longitude'].toDouble();

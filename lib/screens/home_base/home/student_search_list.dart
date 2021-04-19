@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:test_app/components/standard_button.dart';
 import 'package:test_app/models/Student.dart';
 import 'package:test_app/screens/home_base/home/student_home.dart';
+import 'package:test_app/screens/home_base/home/student_search_job_profile.dart';
 
 import '../../../components/card_job.dart';
 
@@ -10,7 +12,7 @@ import '../../../constants.dart';
 import '../../../models/Job.dart';
 
 class StudentSearchList extends StatefulWidget {
-  StudentSearchList(this.jobList, this.student);
+  StudentSearchList({this.jobList, this.student});
 
   final List<Job> jobList;
   final Student student;
@@ -25,6 +27,8 @@ class _StudentSearchListState extends State<StudentSearchList> {
   bool jobListIsEmpty;
   Student student;
   bool goBack = false;
+  bool clickedOnJob = false;
+  String clickedJobId = "";
 
   List<Widget> generateJobCards() {
     List<Widget> jobCardWidgets = [];
@@ -36,8 +40,15 @@ class _StudentSearchListState extends State<StudentSearchList> {
         jobEmployer: thisJob.employer,
         jobFarAway: thisJob.distanceToPostcode,
         jobWage: thisJob.wage,
-        jobTimeFrom: thisJob.timeFrom,
-        jobTimeTo: thisJob.timeTo,
+        jobTimeFrom: DateFormat.Hm().format(DateTime.parse(thisJob.timeFrom)),
+        jobTimeTo: DateFormat.Hm().format(DateTime.parse(thisJob.timeTo)),
+        //^^^  parses ISO8601 format into datetime format, and uses intl to change into readable time
+        onPress: () {
+          setState(() {
+            clickedJobId = thisJob.id;
+            clickedOnJob = true;
+          });
+        },
       ));
       // add divider between job cards as long as not the last job card of list
       if (!(i + 1 == widget.jobList.length)) {
@@ -53,6 +64,7 @@ class _StudentSearchListState extends State<StudentSearchList> {
 
   @override
   void initState() {
+    clickedOnJob = false;
     student = widget.student;
     jobList = widget.jobList;
     lengthJobList = jobList.length;
@@ -67,9 +79,15 @@ class _StudentSearchListState extends State<StudentSearchList> {
   @override
   Widget build(BuildContext context) {
     return Stack(children: <Widget>[
-      !goBack
-          ? (!jobListIsEmpty ? buildJobList() : buildNoJobsAvailable())
-          : StudentHome(student: student),
+      !clickedOnJob
+          ? (!goBack
+              ? (!jobListIsEmpty ? buildJobList() : buildNoJobsAvailable())
+              : StudentHome(student: student))
+          : StudentSearchJobProfile(
+              student: student,
+              jobId: clickedJobId,
+              jobList: jobList,
+            ),
       //   !jobListIsEmpty
       //   ? buildJobList()
       //   : buildNoJobsAvailable(

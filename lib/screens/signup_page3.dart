@@ -121,7 +121,7 @@ class _SignUpPage3State extends State<SignUpPage3> {
                             },
                             child: CardContents(
                               textCard: 'Kitchen Porter',
-                              iconCard: Icons.sports_bar,
+                              iconCard: Icons.countertops,
                             ),
                           ),
                         ),

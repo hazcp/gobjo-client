@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import '../constants.dart';
 
 class TopSearchJob extends StatelessWidget {
-  TopSearchJob();
+  TopSearchJob({this.jobTitle, this.jobEmployer, this.jobLocation});
+
+  final String jobTitle;
+  final String jobEmployer;
+  final String jobLocation;
 
   @override
   Widget build(BuildContext context) {
@@ -17,26 +21,29 @@ class TopSearchJob extends StatelessWidget {
         SizedBox(
           width: 20.0,
         ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Archie\'s Bar',
-              style: kStudentJobPageMain,
-            ),
-            SizedBox(height: 5),
-            Text(
-              'Bar Staff - Today',
-              style: kSecondaryGreyBItalic,
-            ),
-            Text(
-              'Liverpool, UK',
-              style: kSecondaryGreyItalic,
-            ),
-          ],
+        Container(
+          width: 150,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                jobTitle,
+                style: kStudentJobPageMain,
+              ),
+              SizedBox(height: 5),
+              Text(
+                jobEmployer,
+                style: kSecondaryGreyBItalic,
+              ),
+              Text(
+                jobLocation,
+                style: kSecondaryGreyItalic,
+              ),
+            ],
+          ),
         ),
         Padding(
-          padding: const EdgeInsets.only(left: 45),
+          padding: const EdgeInsets.only(left: 33),
           child: Icon(Icons.bookmark),
         ),
       ],

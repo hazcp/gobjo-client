@@ -3,37 +3,33 @@ import 'package:intl/intl.dart';
 import 'package:test_app/components/loading_indicator.dart';
 import 'package:test_app/models/Job.dart';
 import 'package:test_app/models/Student.dart';
-import 'package:test_app/screens/home_base/home/student_search_list.dart';
+import 'package:test_app/screens/home_base/jobs/student_jobs.dart';
 import '../../../api.dart';
 import '../../../components/top_search_job.dart';
 import '../../../components/job_page_box.dart';
 import '../../../components/standard_button.dart';
 import '../../../constants.dart';
 
-class StudentSearchJobProfile extends StatefulWidget {
-  StudentSearchJobProfile({this.student, this.jobId, this.jobList});
+class StudentJobsJobProfile extends StatefulWidget {
+  StudentJobsJobProfile({this.student, this.jobId});
 
   final Student student;
-  final List<Job> jobList;
   final String jobId;
 
   @override
-  _StudentSearchJobProfileState createState() =>
-      _StudentSearchJobProfileState();
+  _StudentJobsJobProfileState createState() => _StudentJobsJobProfileState();
 }
 
-class _StudentSearchJobProfileState extends State<StudentSearchJobProfile> {
+class _StudentJobsJobProfileState extends State<StudentJobsJobProfile> {
   Student student;
   Job job;
-  bool goBack = false;
-  List<Job> theJobList;
+  bool goBack;
 
   @override
   void initState() {
     super.initState();
-    goBack = false;
     student = widget.student;
-    theJobList = widget.jobList;
+    goBack = false;
     getJob(widget.jobId);
   }
 
@@ -48,7 +44,7 @@ class _StudentSearchJobProfileState extends State<StudentSearchJobProfile> {
   Widget build(BuildContext context) {
     return !goBack
         ? (job != null ? buildJobProfile() : Center(child: LoadingIndicator()))
-        : StudentSearchList(jobList: theJobList, student: student);
+        : StudentJobs(student: student);
   }
 
   Widget buildJobProfile() {
@@ -94,37 +90,35 @@ class _StudentSearchJobProfileState extends State<StudentSearchJobProfile> {
               boxText: '${job.description}',
             ),
             SizedBox(height: 50),
-            Row(
-              children: [
-                Expanded(
-                  child: StandardButton(
-                    textButton: 'APPLY',
-                    onPressed: () {
-                      apiService.createJobStatus(
-                          job.id, student.id, "hasApplied");
-                      print("Sucessfully Applied");
-                      theJobList.removeWhere((job) => job.id == widget.jobId);
-                      setState(() {
-                        goBack = true;
-                      });
-                    },
-                    colourButton: kPurpleThemeColour,
-                  ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                StandardButton(
+                  textButton: 'WITHDRAW APPLICATION',
+                  onPressed: () {
+                    print('WITHDRAW APPLICATION');
+                  },
+                  colourButton: kPurpleThemeColour,
                 ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: StandardButton(
-                    textButton: 'BACK',
-                    onPressed: () {
-                      setState(() {
-                        goBack = true;
-                      });
-                    },
-                    colourButton: kGreyColour,
-                  ),
+                StandardButton(
+                  textButton: 'BACK',
+                  onPressed: () {
+                    setState(() {
+                      goBack = true;
+                    });
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) {
+                    //       return StudentJobs(student: student);
+                    //     },
+                    //   ),
+                    // );
+                  },
+                  colourButton: kGreyColour,
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),

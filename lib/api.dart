@@ -4,10 +4,11 @@ import 'dart:convert';
 import 'models/Job.dart';
 import 'package:http/http.dart' as http;
 
+import 'models/JobStatus.dart';
 import 'models/Student.dart';
 
 class APIService {
-  final ngrokUrl = "https://d76452cce766.ngrok.io";
+  final ngrokUrl = "https://a71aeea834b2.ngrok.io";
 
   final StreamController<Student> studentStream =
       StreamController<Student>.broadcast();
@@ -31,6 +32,40 @@ class APIService {
       print(e);
     }
     return null;
+  }
+
+  // make return something? perhaps ID of job status or status code
+  void createJobStatus(String jobId, String studentId, String jobStatus) async {
+    try {
+      var url = Uri.parse('$ngrokUrl/job-status');
+      DateTime now = DateTime.now();
+      String appliedTime = now.toIso8601String();
+      await http.post(
+        url,
+        body: {
+          "jobId": jobId,
+          "studentId": studentId,
+          "appliedTime": appliedTime,
+          "jobStatus": jobStatus
+        },
+      );
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  // make return something? perhaps ID of job status or status code
+  Future<List<JobStatus>> findAllAppliedJobs(String studentId) async {
+    var url = Uri.encodeFull('$ngrokUrl/job-status/find?studentId=$studentId');
+
+    http.Response response = await http.get(url);
+    List<JobStatus> jobStatuses = [];
+    final searchResultsJSON = jsonDecode(response.body);
+    searchResultsJSON.forEach((jobStatus) {
+      jobStatuses.add(JobStatus.fromJson(data: jobStatus));
+      print(jobStatus);
+    });
+    return jobStatuses;
   }
 
   Future<Student> updateStudent(
@@ -64,6 +99,14 @@ class APIService {
   //   });
   //   return jobs;
   // }
+
+  Future<Job> findJob(String jobId) async {
+    var url = Uri.encodeFull('$ngrokUrl/job/find/$jobId');
+    http.Response response = await http.get(url);
+    final jobJSON = jsonDecode(response.body);
+    final theJob = Job.fromJson(data: jobJSON);
+    return theJob;
+  }
 
   Future<List<Job>> searchJobs(
     String postcode,

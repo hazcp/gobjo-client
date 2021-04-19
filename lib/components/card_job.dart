@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:test_app/components/card_job_text.dart';
 
 class JobCard extends StatelessWidget {
-  JobCard({
-    this.pictureName,
-    this.jobType,
-    this.jobEmployer,
-    this.jobWage,
-    this.jobFarAway,
-    this.jobTimeFrom,
-    this.jobTimeTo,
-  });
+  JobCard(
+      {this.pictureName,
+      this.jobType,
+      this.jobEmployer,
+      this.jobWage,
+      this.jobFarAway,
+      this.jobTimeFrom,
+      this.jobTimeTo,
+      this.onPress});
 
   final String pictureName;
   final String jobType;
@@ -19,30 +19,34 @@ class JobCard extends StatelessWidget {
   final double jobFarAway;
   final String jobTimeFrom;
   final String jobTimeTo;
+  final Function onPress;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Image.asset(
-            'assets/$pictureName',
-            width: 100,
-            height: 53,
-          ),
-          CardJobText(
-            jobType: jobType,
-            jobEmployer: jobEmployer,
-            jobWage: jobWage.toStringAsFixed(2),
-            jobFarAway: jobFarAway,
-            jobTimeFrom: jobTimeFrom,
-            jobTimeTo: jobTimeTo,
-          ),
-          Padding(
-              padding: EdgeInsets.only(left: 40.0),
-              child: Icon(Icons.bookmark)),
-        ],
+    return GestureDetector(
+      onTap: onPress,
+      child: Container(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Image.asset(
+              'assets/$pictureName',
+              width: 100,
+              height: 53,
+            ),
+            CardJobText(
+              jobType: jobType,
+              jobEmployer: jobEmployer,
+              jobWage: jobWage.toStringAsFixed(2),
+              jobFarAway: jobFarAway,
+              jobTimeFrom: jobTimeFrom,
+              jobTimeTo: jobTimeTo,
+            ),
+            Padding(
+                padding: EdgeInsets.only(left: 40.0),
+                child: Icon(Icons.bookmark)),
+          ],
+        ),
       ),
     );
   }

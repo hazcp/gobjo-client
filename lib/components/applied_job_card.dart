@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:test_app/constants.dart';
 
-class SavedJobCard extends StatelessWidget {
-  SavedJobCard({this.jobEmployer, this.jobType, this.whenJob});
+class AppliedJobCard extends StatelessWidget {
+  AppliedJobCard(
+      {this.jobEmployer, this.jobType, this.whenJob, this.isSelected});
 
   final String jobType;
   final String jobEmployer;
   final String whenJob;
+  final Function isSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -21,16 +23,20 @@ class SavedJobCard extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.only(left: 20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(jobType, style: kMainGreyBold),
-                Text(jobEmployer, style: kSecondaryGrey),
-                Text(whenJob, style: kSecondaryPurple),
-              ],
+            child: Container(
+              width: 150.0,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(jobType, style: kMainGreyBold),
+                  Text(jobEmployer, style: kSecondaryGrey),
+                  SizedBox(height: 5),
+                  Text(whenJob, style: kSecondaryPurple),
+                ],
+              ),
             ),
           ),
-          SizedBox(width: 73),
+          SizedBox(width: 15.0),
           Expanded(
             child: PopupMenuButton<String>(
               icon: Icon(
@@ -38,7 +44,7 @@ class SavedJobCard extends StatelessWidget {
                 color: kGreyColour,
                 size: 30,
               ),
-              onSelected: choiceAction,
+              onSelected: isSelected,
               itemBuilder: (BuildContext context) {
                 return savedChoices.map((String choice) {
                   return PopupMenuItem<String>(
@@ -52,13 +58,5 @@ class SavedJobCard extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-void choiceAction(String choice) {
-  if (choice == Unsave) {
-    print('Unsave');
-  } else if (choice == View) {
-    print('View');
   }
 }

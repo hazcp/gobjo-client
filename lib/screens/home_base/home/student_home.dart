@@ -24,6 +24,7 @@ class _StudentHomeState extends State<StudentHome> {
   double willingToTravel;
   String willingToTravelString;
   bool isSearching;
+  bool firstTime;
   List<Job> jobs;
   List<Job> finalJobs;
   Geodesy geodesy = Geodesy();
@@ -117,7 +118,9 @@ class _StudentHomeState extends State<StudentHome> {
   @override
   Widget build(BuildContext context) {
     return Stack(children: <Widget>[
-      !isSearching ? buildHome() : StudentSearchList(finalJobs, widget.student),
+      !isSearching
+          ? buildHome()
+          : StudentSearchList(jobList: finalJobs, student: widget.student),
     ]);
   }
 
@@ -227,12 +230,13 @@ class _StudentHomeState extends State<StudentHome> {
           child: StandardButton(
             textButton: 'FIND JOBS FOR ME',
             onPressed: () async {
+              print(isSelectedToday);
               if (isSelectedToday) {
                 prevSearchTimeRange = "Today";
               } else {
                 prevSearchTimeRange = "ONW";
               }
-
+              print(willingToTravel);
               prevSearchFarAwayRange = willingToTravel.toString();
 
               apiService.updateStudent(
