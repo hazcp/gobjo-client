@@ -62,6 +62,12 @@ const kSecondaryGrey = TextStyle(
   color: kGreyColour,
 );
 
+const kSecondaryPurpleBold = TextStyle(
+  fontSize: 14.0,
+  color: kPurpleThemeColour,
+  fontWeight: FontWeight.bold,
+);
+
 const kSecondaryGreyBold = TextStyle(
   fontSize: 14.0,
   fontWeight: FontWeight.bold,
