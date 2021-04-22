@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:test_app/components/loading_indicator.dart';
+import 'package:test_app/components/top_job_profile_jobs.dart';
 import 'package:test_app/models/Job.dart';
 import 'package:test_app/models/Student.dart';
 import 'package:test_app/screens/home_base/jobs/student_jobs.dart';
 import '../../../api.dart';
-import '../../../components/top_search_job.dart';
 import '../../../components/job_page_box.dart';
 import '../../../components/standard_button.dart';
 import '../../../constants.dart';
@@ -54,7 +54,7 @@ class _StudentJobsJobProfileState extends State<StudentJobsJobProfile> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            TopSearchJob(
+            TopJobProfileJobs(
               jobTitle: job.title,
               jobEmployer: job.employer,
               jobLocation: job.location,

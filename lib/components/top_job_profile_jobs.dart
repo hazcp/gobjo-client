@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../constants.dart';
 
-class TopSearchJob extends StatelessWidget {
-  TopSearchJob({this.jobTitle, this.jobEmployer, this.jobLocation});
+class TopJobProfileJobs extends StatelessWidget {
+  TopJobProfileJobs({this.jobTitle, this.jobEmployer, this.jobLocation});
 
   final String jobTitle;
   final String jobEmployer;
@@ -41,10 +41,6 @@ class TopSearchJob extends StatelessWidget {
               ),
             ],
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 33),
-          child: Icon(Icons.bookmark),
         ),
       ],
     );

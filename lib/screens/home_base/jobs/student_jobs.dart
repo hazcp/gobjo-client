@@ -62,9 +62,9 @@ class _StudentJobsState extends State<StudentJobs> {
     return jobAppliedCardWidgets;
   }
 
-  void getAllAppliedJobs(String studentId) async {
+  void findAllJobsWithStatusX(String studentId, String jobStatus) async {
     List<JobStatus> jobStatusesList =
-        await apiService.findAllAppliedJobs(studentId);
+        await apiService.findAllJobsWithStatusX(studentId, jobStatus);
     setState(() {
       jobStatusList = jobStatusesList;
     });
@@ -86,7 +86,7 @@ class _StudentJobsState extends State<StudentJobs> {
   void initState() {
     clickedOnJob = false;
     student = widget.student;
-    getAllAppliedJobs(student.id);
+    findAllJobsWithStatusX(student.id, "hasApplied");
     super.initState();
   }
 
@@ -124,7 +124,7 @@ class _StudentJobsState extends State<StudentJobs> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: kPurpleThemeColour,
         onPressed: () {
-          getAllAppliedJobs(student.id);
+          findAllJobsWithStatusX(student.id, "hasApplied");
         },
         child: Icon(Icons.refresh),
       ),

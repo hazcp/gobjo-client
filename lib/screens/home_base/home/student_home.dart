@@ -230,13 +230,11 @@ class _StudentHomeState extends State<StudentHome> {
           child: StandardButton(
             textButton: 'FIND JOBS FOR ME',
             onPressed: () async {
-              print(isSelectedToday);
               if (isSelectedToday) {
                 prevSearchTimeRange = "Today";
               } else {
                 prevSearchTimeRange = "ONW";
               }
-              print(willingToTravel);
               prevSearchFarAwayRange = willingToTravel.toString();
 
               apiService.updateStudent(
@@ -248,14 +246,14 @@ class _StudentHomeState extends State<StudentHome> {
               );
 
               jobs = await apiService.searchJobs(widget.student.postcode,
-                  willingToTravel.toString(), isSelectedToday);
+                  willingToTravel.toString(), isSelectedToday, student.id);
 
               finalJobs = await sortAndCalcDistanceJobs(jobs, willingToTravel);
 
-              for (var job in finalJobs) {
-                print(job.employer.toString());
-                print(job.distanceToPostcode.toString());
-              }
+              // for (var job in finalJobs) {
+              //   print(job.employer.toString());
+              //   print(job.distanceToPostcode.toString());
+              // }
 
               setState(() {
                 isSearching = true;

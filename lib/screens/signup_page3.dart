@@ -27,12 +27,14 @@ class _SignUpPage3State extends State<SignUpPage3> {
   bool isWaiter = false; // change this when have time
   Color cardColour = Colors.white;
   String studentFirstName;
+  int counter;
 
   @override
   void initState() {
     String studentName = widget.student.name;
     var parts = studentName.split(" ");
     studentFirstName = parts[0].trim();
+    counter = 0;
     super.initState();
   }
 
@@ -86,8 +88,10 @@ class _SignUpPage3State extends State<SignUpPage3> {
                               setState(() {
                                 if (!isBarStaff) {
                                   isBarStaff = true;
+                                  counter++;
                                 } else {
                                   isBarStaff = false;
+                                  counter--;
                                 }
                               });
                             },
@@ -114,8 +118,10 @@ class _SignUpPage3State extends State<SignUpPage3> {
                               setState(() {
                                 if (!isKitchenPorter) {
                                   isKitchenPorter = true;
+                                  counter++;
                                 } else {
                                   isKitchenPorter = false;
+                                  counter--;
                                 }
                               });
                             },
@@ -141,8 +147,10 @@ class _SignUpPage3State extends State<SignUpPage3> {
                               setState(() {
                                 if (!isWaiter) {
                                   isWaiter = true;
+                                  counter++;
                                 } else {
                                   isWaiter = false;
+                                  counter--;
                                 }
                               });
                             },
@@ -183,15 +191,19 @@ class _SignUpPage3State extends State<SignUpPage3> {
                   alignment: Alignment.bottomRight,
                   child: NextPageButton(
                     onPress: () {
-                      apiService.updateStudent(
-                        widget.student.id,
-                        {
-                          "isBarStaff": isBarStaff,
-                          "isKitchenPorter": isKitchenPorter,
-                          "isWaiter": isWaiter,
-                          "pageNumber": 4
-                        },
-                      );
+                      if (counter < 1) {
+                        _showMyDialog();
+                      } else {
+                        apiService.updateStudent(
+                          widget.student.id,
+                          {
+                            "isBarStaff": isBarStaff,
+                            "isKitchenPorter": isKitchenPorter,
+                            "isWaiter": isWaiter,
+                            "pageNumber": 4
+                          },
+                        );
+                      }
                     },
                   ),
                 ),
@@ -200,6 +212,26 @@ class _SignUpPage3State extends State<SignUpPage3> {
           ),
         ),
       ],
+    );
+  }
+
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Please choose at least one option.'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Ok', style: TextStyle(color: kPurpleThemeColour)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

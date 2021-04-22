@@ -2,24 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:test_app/components/prev_page_button.dart';
+import 'package:test_app/components/textfields/signup_postcode_textfield.dart';
 import 'package:test_app/constants.dart';
 import 'package:test_app/models/Student.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import '../api.dart';
 import '../components/background.dart';
 import '../components/bottom_progress_row.dart';
 import '../components/next_page_button.dart';
-
-class UpperCaseTextFormatter extends TextInputFormatter {
-  @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
-    return TextEditingValue(
-      text: newValue.text?.toUpperCase(),
-      selection: newValue.selection,
-    );
-  }
-}
 
 class SignUpPage2 extends StatefulWidget {
   SignUpPage2(this.student);
@@ -159,9 +150,13 @@ class _SignUpPage2State extends State<SignUpPage2> {
 
   String selectedUniversity;
   final _postcodeController = TextEditingController();
+  final _typeAheadController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool isValid;
 
   @override
   void initState() {
+    isValid = false;
     if (widget.student.postcode != null) {
       _postcodeController.text = widget.student.postcode;
       _postcodeController.selection = TextSelection.fromPosition(
@@ -171,130 +166,176 @@ class _SignUpPage2State extends State<SignUpPage2> {
   }
 
   @override
+  void dispose() {
+    _postcodeController.dispose();
+    super.dispose();
+  }
+
+  List getSuggestions(String query) {
+    List<String> matches = [];
+    matches.addAll(unis);
+
+    matches.retainWhere((s) => s.toLowerCase().contains(query.toLowerCase()));
+    return matches;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Background(),
-        Scaffold(
-          backgroundColor: Colors.transparent,
-          body: SafeArea(
-            child: Padding(
-              padding: EdgeInsets.all(41.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Spacer(flex: 1),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'What is your postcode?',
-                      style: kSignUpTextStyle,
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 15),
-                    child: TextFormField(
-                      inputFormatters: [
-                        UpperCaseTextFormatter(),
-                      ],
-                      controller: _postcodeController,
-                      decoration: InputDecoration(
-                        labelText: '',
-                        border: OutlineInputBorder(),
+    return Form(
+      key: _formKey,
+      child: Stack(
+        children: <Widget>[
+          Background(),
+          Scaffold(
+            backgroundColor: Colors.transparent,
+            body: SafeArea(
+              child: Padding(
+                padding: EdgeInsets.all(41.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Spacer(flex: 1),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'What university do you go to?',
+                        style: kSignUpTextStyle,
                       ),
-                      textCapitalization: TextCapitalization.characters,
                     ),
-                  ),
-                  SizedBox(
-                    height: 50.0,
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: Container(
+                        width: 329.4,
+                        height: 60,
+                        child: TypeAheadFormField(
+                          textFieldConfiguration: TextFieldConfiguration(
+                            controller: _typeAheadController,
+                            decoration: InputDecoration(
+                              hintText: 'Please choose your University',
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: kPurpleThemeColour),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: kPurpleThemeColour),
+                              ),
+                              border: UnderlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: kPurpleThemeColour),
+                              ),
+                            ),
+                          ),
+                          suggestionsCallback: (pattern) {
+                            return getSuggestions(pattern);
+                          },
+                          itemBuilder: (context, suggestion) {
+                            return ListTile(
+                              title: Text(suggestion),
+                            );
+                          },
+                          transitionBuilder:
+                              (context, suggestionsBox, controller) {
+                            return suggestionsBox;
+                          },
+                          onSuggestionSelected: (suggestion) {
+                            _typeAheadController.text = suggestion;
+                          },
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Select your University.';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            setState(() {
+                              selectedUniversity = value;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 50.0,
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'What is your postcode?',
+                        style: kSignUpTextStyle,
+                      ),
+                    ),
+                    SignUpPostcodeTextField(
+                      textController: _postcodeController,
+                      validatorFunction: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Enter your postcode";
+                        } else if (isValid == false) {
+                          return "Enter a valid postcode";
+                        }
+                        return null;
+                      },
+                    ),
+                    Spacer(flex: 3),
+                    BottomProgressRow(
+                      fractionProgress: 0.5,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            floatingActionButton: Padding(
+              padding: EdgeInsets.only(left: 35),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Align(
+                    alignment: Alignment.bottomLeft,
+                    child: PrevPageButton(
+                      onPress: () {
+                        apiService.updateStudent(
+                          widget.student.id,
+                          {"pageNumber": 1},
+                        );
+                      },
+                    ),
                   ),
                   Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'What university do you go to?',
-                      style: kSignUpTextStyle,
+                    alignment: Alignment.bottomRight,
+                    child: NextPageButton(
+                      onPress: () async {
+                        String postcode = _postcodeController.text;
+                        String selectedUni = _typeAheadController.text;
+                        Future<bool> isValidPostcode =
+                            apiService.isValidPostcode(postcode);
+                        bool isValidPCode = await isValidPostcode;
+
+                        setState(() {
+                          isValid = isValidPCode;
+                        });
+
+                        if (_formKey.currentState.validate()) {
+                          apiService.updateStudent(
+                            widget.student.id,
+                            {
+                              "postcode": postcode,
+                              "pageNumber": 3,
+                              "university": selectedUni
+                            },
+                          );
+                        } else {
+                          // TODO: implement error because postcode is not valid
+                          print('NO ITS NOT VALID ');
+                        }
+                      },
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 5.0),
-                    child: Container(
-                      width: 329.4,
-                      height: 60,
-                      child: DropdownButton<String>(
-                          value: selectedUniversity,
-                          hint: Text('Please choose your University'),
-                          underline: Container(
-                            height: 2,
-                            color: kPurpleThemeColour,
-                          ),
-                          isExpanded: true,
-                          items: unis.map((university) {
-                            return DropdownMenuItem(
-                              value: university,
-                              child: Text(university),
-                            );
-                          }).toList(),
-                          onChanged: (val) {
-                            setState(() {
-                              selectedUniversity = val;
-                            });
-                          }),
-                    ),
-                  ),
-                  Spacer(flex: 3),
-                  BottomProgressRow(
-                    fractionProgress: 0.5,
                   ),
                 ],
               ),
             ),
           ),
-          floatingActionButton: Padding(
-            padding: EdgeInsets.only(left: 35),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Align(
-                  alignment: Alignment.bottomLeft,
-                  child: PrevPageButton(
-                    onPress: () {
-                      apiService.updateStudent(
-                        widget.student.id,
-                        {"pageNumber": 1},
-                      );
-                    },
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: NextPageButton(
-                    onPress: () async {
-                      String postcode = _postcodeController.text;
-
-                      Future<bool> isValidPostcode =
-                          apiService.isValidPostcode(postcode);
-                      bool isValid = await isValidPostcode;
-                      if (isValid == true && selectedUniversity != null) {
-                        apiService.updateStudent(
-                          widget.student.id,
-                          {
-                            "postcode": postcode,
-                            "pageNumber": 3,
-                            "university": selectedUniversity
-                          },
-                        );
-                      } else {
-                        // TODO: implement error because postcode is not valid
-                        print('NO ITS NOT VALID ');
-                      }
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

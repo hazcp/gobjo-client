@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:test_app/components/standard_button.dart';
+import 'package:test_app/models/JobStatus.dart';
 import 'package:test_app/models/Student.dart';
 import 'package:test_app/screens/home_base/home/student_home.dart';
 import 'package:test_app/screens/home_base/home/student_search_job_profile.dart';
@@ -22,6 +23,7 @@ class StudentSearchList extends StatefulWidget {
 }
 
 class _StudentSearchListState extends State<StudentSearchList> {
+  List<JobStatus> jobStatusList;
   List<Job> jobList;
   int lengthJobList;
   bool jobListIsEmpty;
@@ -32,8 +34,8 @@ class _StudentSearchListState extends State<StudentSearchList> {
 
   List<Widget> generateJobCards() {
     List<Widget> jobCardWidgets = [];
-    for (int i = 0; i < widget.jobList.length; i++) {
-      Job thisJob = widget.jobList[i];
+    for (int i = 0; i < jobList.length; i++) {
+      Job thisJob = jobList[i];
       jobCardWidgets.add(JobCard(
         pictureName: 'default_job.png',
         jobType: thisJob.title,
@@ -51,7 +53,7 @@ class _StudentSearchListState extends State<StudentSearchList> {
         },
       ));
       // add divider between job cards as long as not the last job card of list
-      if (!(i + 1 == widget.jobList.length)) {
+      if (!(i + 1 == jobList.length)) {
         jobCardWidgets.add(
           Divider(
             height: 50.0,
@@ -88,9 +90,6 @@ class _StudentSearchListState extends State<StudentSearchList> {
               jobId: clickedJobId,
               jobList: jobList,
             ),
-      //   !jobListIsEmpty
-      //   ? buildJobList()
-      //   : buildNoJobsAvailable(
       //TODO: sort by distance closest to furthest
     ]);
   }

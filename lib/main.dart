@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:test_app/constants.dart';
-import 'screens/register_page.dart';
+import 'package:test_app/screens/login_register_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
         errorColor: kPurpleThemeColour,
       ),
-      home: RegisterPage(),
+      home: LoginRegisterPage(),
     );
   }
 }

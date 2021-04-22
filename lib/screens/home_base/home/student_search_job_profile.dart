@@ -5,7 +5,7 @@ import 'package:test_app/models/Job.dart';
 import 'package:test_app/models/Student.dart';
 import 'package:test_app/screens/home_base/home/student_search_list.dart';
 import '../../../api.dart';
-import '../../../components/top_search_job.dart';
+import '../../../components/top_job_profile_search.dart';
 import '../../../components/job_page_box.dart';
 import '../../../components/standard_button.dart';
 import '../../../constants.dart';
@@ -58,7 +58,7 @@ class _StudentSearchJobProfileState extends State<StudentSearchJobProfile> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            TopSearchJob(
+            TopJobProfileSearch(
               jobTitle: job.title,
               jobEmployer: job.employer,
               jobLocation: job.location,

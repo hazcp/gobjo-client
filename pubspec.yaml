@@ -15,6 +15,8 @@ dependencies:
 
   http: ^0.12.2
   geodesy: ^0.3.2
+  email_validator: ^2.0.1
+  flutter_typeahead: ^3.1.1
 
   cupertino_icons: ^1.0.0
   dropdownfield: ^1.0.3

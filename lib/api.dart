@@ -8,7 +8,7 @@ import 'models/JobStatus.dart';
 import 'models/Student.dart';
 
 class APIService {
-  final ngrokUrl = "https://f8f327712d57.ngrok.io";
+  final ngrokUrl = "https://cf71bf56ff46.ngrok.io";
 
   final StreamController<Student> studentStream =
       StreamController<Student>.broadcast();
@@ -34,6 +34,14 @@ class APIService {
     return null;
   }
 
+  Future<bool> isExistingStudentEmail(String email) async {
+    var url = Uri.encodeFull('$ngrokUrl/student/find?email=$email');
+    http.Response response = await http.get(url);
+    final parsedJSON = jsonDecode(response.body);
+    final emailExists = parsedJSON['exists'];
+    return emailExists;
+  }
+
   // make return something? perhaps ID of job status or status code
   void createJobStatus(String jobId, String studentId, String jobStatus) async {
     try {
@@ -55,8 +63,10 @@ class APIService {
   }
 
   // make return something? perhaps ID of job status or status code
-  Future<List<JobStatus>> findAllAppliedJobs(String studentId) async {
-    var url = Uri.encodeFull('$ngrokUrl/job-status/find?studentId=$studentId');
+  Future<List<JobStatus>> findAllJobsWithStatusX(
+      String studentId, String jobStatus) async {
+    var url = Uri.encodeFull(
+        '$ngrokUrl/job-status/find?studentId=$studentId&jobStatus=$jobStatus');
 
     http.Response response = await http.get(url);
     List<JobStatus> jobStatuses = [];
@@ -85,21 +95,6 @@ class APIService {
     return null;
   }
 
-  // Future<List<Job>> searchJobs(String upperLat, String lowerLat,
-  //     String upperLong, String lowerLong) async {
-  //   var url = Uri.encodeFull(
-  //       '$ngrokUrl/job/search?upperLat=$upperLat&lowerLat=$lowerLat&upperLong=$upperLong&lowerLong=$lowerLong');
-  //   http.Response response = await http.get(url);
-  //
-  //   List<Job> jobs = [];
-  //   final searchResultsJSON = jsonDecode(response.body);
-  //   searchResultsJSON.forEach((job) {
-  //     jobs.add(Job.fromJson(data: job));
-  //     print(job);
-  //   });
-  //   return jobs;
-  // }
-
   Future<Job> findJob(String jobId) async {
     var url = Uri.encodeFull('$ngrokUrl/job/find/$jobId');
     http.Response response = await http.get(url);
@@ -108,23 +103,20 @@ class APIService {
     return theJob;
   }
 
-  Future<List<Job>> searchJobs(
-    String postcode,
-    String specifiedDistanceKm,
-    bool isToday,
-  ) async {
+  Future<List<Job>> searchJobs(String postcode, String specifiedDistanceKm,
+      bool isToday, String studentId) async {
     double specifiedDistanceM =
         1000 * double.parse(specifiedDistanceKm); // km -> m
     String specifiedDistanceMString = specifiedDistanceM.toString();
     var url = Uri.encodeFull(
-        '$ngrokUrl/job/search?postcode=$postcode&specifiedDistance=$specifiedDistanceMString&isToday=$isToday');
+        '$ngrokUrl/job/search?postcode=$postcode&specifiedDistance=$specifiedDistanceMString&isToday=$isToday&studentId=$studentId');
 
     http.Response response = await http.get(url);
     List<Job> jobs = [];
     final searchResultsJSON = jsonDecode(response.body);
     searchResultsJSON.forEach((job) {
       jobs.add(Job.fromJson(data: job));
-      print(job);
+      // print(job);
     });
     return jobs;
   }
