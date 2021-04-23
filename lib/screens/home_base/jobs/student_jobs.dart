@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:test_app/components/loading_indicator.dart';
+import 'package:test_app/components/saved_job_card.dart';
 import 'package:test_app/constants.dart';
 import 'package:test_app/models/Job.dart';
 import 'package:test_app/models/JobStatus.dart';
 import 'package:test_app/models/Student.dart';
-import 'package:test_app/screens/home_base/jobs/student_jobs_job_profile.dart';
+import 'package:test_app/screens/home_base/jobs/student_jobs_applied_job_profile.dart';
+import 'package:test_app/screens/home_base/jobs/student_jobs_saved_job_profile.dart';
 
 import '../../../api.dart';
 import '../../../components/applied_job_card.dart';
@@ -21,15 +23,18 @@ class StudentJobs extends StatefulWidget {
 class _StudentJobsState extends State<StudentJobs> {
   Student student;
   List<JobStatus> jobStatusList;
-  List<Job> jobList;
-  bool clickedOnJob = false;
+  List<Job> jobAppliedList;
+  List<Job> jobSavedList;
+
+  bool clickedOnJobSaved = false;
+  bool clickedOnJobApplied = false;
   String clickedJobId = "";
 
   List<Widget> generateAppliedJobCards() {
     List<Widget> jobAppliedCardWidgets = [];
 
-    for (int i = 0; i < jobList.length; i++) {
-      Job thisJob = jobList[i];
+    for (int i = 0; i < jobAppliedList.length; i++) {
+      Job thisJob = jobAppliedList[i];
       String whenJobDate =
           DateFormat("d/M/yyyy").format(DateTime.parse(thisJob.timeFrom));
 
@@ -40,18 +45,19 @@ class _StudentJobsState extends State<StudentJobs> {
           whenJob: whenJobDate,
           isSelected: (choice) {
             if (choice == Withdraw) {
-              print('Unsave');
+              apiService.updateJobStatus(student.id, thisJob.id, "");
+              findAllJobsWithStatusX(student.id, "hasApplied");
             } else if (choice == View) {
               setState(() {
                 clickedJobId = thisJob.id;
-                clickedOnJob = true;
+                clickedOnJobApplied = true;
               });
             }
           },
         ),
       );
       // add divider between job cards as long as not the last job card of list
-      if (!(i + 1 == jobList.length)) {
+      if (!(i + 1 == jobAppliedList.length)) {
         jobAppliedCardWidgets.add(
           Divider(
             height: 20.0,
@@ -60,6 +66,44 @@ class _StudentJobsState extends State<StudentJobs> {
       }
     }
     return jobAppliedCardWidgets;
+  }
+
+  List<Widget> generateSavedJobCards() {
+    List<Widget> jobSavedCardWidgets = [];
+
+    for (int i = 0; i < jobSavedList.length; i++) {
+      Job thisJob = jobSavedList[i];
+      String whenJobDate =
+          DateFormat("d/M/yyyy").format(DateTime.parse(thisJob.timeFrom));
+
+      jobSavedCardWidgets.add(
+        SavedJobCard(
+          jobType: thisJob.title,
+          jobEmployer: thisJob.employer,
+          whenJob: whenJobDate,
+          isSelected: (choice) {
+            if (choice == Unsave) {
+              apiService.updateJobStatus(student.id, thisJob.id, "");
+              findAllJobsWithStatusX(student.id, "hasSaved");
+            } else if (choice == View) {
+              setState(() {
+                clickedJobId = thisJob.id;
+                clickedOnJobSaved = true;
+              });
+            }
+          },
+        ),
+      );
+      // add divider between job cards as long as not the last job card of list
+      if (!(i + 1 == jobSavedList.length)) {
+        jobSavedCardWidgets.add(
+          Divider(
+            height: 20.0,
+          ),
+        );
+      }
+    }
+    return jobSavedCardWidgets;
   }
 
   void findAllJobsWithStatusX(String studentId, String jobStatus) async {
@@ -73,36 +117,48 @@ class _StudentJobsState extends State<StudentJobs> {
 
     for (int i = 0; i < jobStatusList.length; i++) {
       String theJobId = jobStatusList[i].jobId;
-      Job theJob = await apiService.findJob(theJobId);
+      Job theJob = await apiService.findJob(theJobId, student.id);
       theJobList.add(theJob);
     }
-
-    setState(() {
-      jobList = theJobList;
-    });
+    if (jobStatus == "hasApplied") {
+      setState(() {
+        jobAppliedList = theJobList;
+      });
+    } else if (jobStatus == "hasSaved") {
+      setState(() {
+        jobSavedList = theJobList;
+      });
+    }
   }
 
   @override
   void initState() {
-    clickedOnJob = false;
+    clickedOnJobSaved = false;
+    clickedOnJobApplied = false;
     student = widget.student;
     findAllJobsWithStatusX(student.id, "hasApplied");
+    findAllJobsWithStatusX(student.id, "hasSaved");
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return !clickedOnJob
-        ? (jobList != null
-            ? buildAppliedPage()
-            : Center(child: LoadingIndicator()))
-        : StudentJobsJobProfile(
+    return !clickedOnJobSaved
+        ? (!clickedOnJobApplied
+            ? ((jobSavedList != null && jobAppliedList != null)
+                ? buildJobPage()
+                : Center(child: LoadingIndicator()))
+            : StudentJobsAppliedJobProfile(
+                student: student,
+                jobId: clickedJobId,
+              ))
+        : StudentJobsSavedJobProfile(
             student: student,
             jobId: clickedJobId,
           );
   }
 
-  Widget buildAppliedPage() {
+  Widget buildJobPage() {
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -114,19 +170,35 @@ class _StudentJobsState extends State<StudentJobs> {
           ),
           SizedBox(height: 20.0),
           Text('Applied', style: kMainPurpleBold),
-          Expanded(
-            child: ListView(
-              children: generateAppliedJobCards(),
-            ),
-          ),
+          buildAppliedContent(),
+          SizedBox(height: 20.0),
+          Text('Saved', style: kMainPurpleBold),
+          buildSavedContent(),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: kPurpleThemeColour,
-        onPressed: () {
-          findAllJobsWithStatusX(student.id, "hasApplied");
-        },
-        child: Icon(Icons.refresh),
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: kPurpleThemeColour,
+      //   onPressed: () {
+      //     findAllJobsWithStatusX(student.id, "hasApplied");
+      //     findAllJobsWithStatusX(student.id, "hasSaved");
+      //   },
+      //   child: Icon(Icons.refresh),
+      // ),
+    );
+  }
+
+  Widget buildAppliedContent() {
+    return Expanded(
+      child: ListView(
+        children: generateAppliedJobCards(),
+      ),
+    );
+  }
+
+  Widget buildSavedContent() {
+    return Expanded(
+      child: ListView(
+        children: generateSavedJobCards(),
       ),
     );
   }

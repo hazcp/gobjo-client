@@ -8,7 +8,7 @@ import 'models/JobStatus.dart';
 import 'models/Student.dart';
 
 class APIService {
-  final ngrokUrl = "https://cf71bf56ff46.ngrok.io";
+  final ngrokUrl = "https://e854e5710b70.ngrok.io";
 
   final StreamController<Student> studentStream =
       StreamController<Student>.broadcast();
@@ -32,6 +32,19 @@ class APIService {
       print(e);
     }
     return null;
+  }
+
+  void loginStudent(String email, String password) async {
+    try {
+      var url = Uri.encodeFull(
+          '$ngrokUrl/student/login?email=$email&password=$password');
+      http.Response response = await http.post(url);
+      final studentJSON = jsonDecode(response.body);
+      final student = Student.fromJson(data: studentJSON);
+      studentStream.add(student);
+    } on Exception catch (e) {
+      studentStream.addError("login failed");
+    }
   }
 
   Future<bool> isExistingStudentEmail(String email) async {
@@ -62,6 +75,19 @@ class APIService {
     }
   }
 
+  void updateJobStatus(String studentId, String jobId, String jobStatus) async {
+    try {
+      var url = Uri.encodeFull('$ngrokUrl/job-status');
+      await http.patch(url,
+          body: JsonEncoder().convert(
+              {"studentId": studentId, "jobId": jobId, "jobStatus": jobStatus}),
+          headers: {"Content-Type": "application/json"});
+    } catch (e) {
+      print(e);
+    }
+    return null;
+  }
+
   // make return something? perhaps ID of job status or status code
   Future<List<JobStatus>> findAllJobsWithStatusX(
       String studentId, String jobStatus) async {
@@ -77,6 +103,24 @@ class APIService {
     });
     return jobStatuses;
   }
+
+  // Future<bool> isJobSaved(String studentId, String jobId) async {
+  //   bool isJobSaved;
+  //   var url = Uri.encodeFull(
+  //       '$ngrokUrl/job-status/issaved?studentId=$studentId&jobId=$jobId');
+  //   http.Response response = await http.get(url);
+  //   // String jsonDataString = response.toString();
+  //   // final parsedJSON = jsonDecode(jsonDataString);
+  //   // final isJobSaved = parsedJSON['saved'];
+  //   // final parsedJSON = jsonDecode(response.body);
+  //   // final isJobSaved = parsedJSON['saved'];
+  //   if (response.body == "true") {
+  //     isJobSaved = true;
+  //   } else if (response.body == "false") {
+  //     isJobSaved = false;
+  //   }
+  //   return isJobSaved;
+  // }
 
   Future<Student> updateStudent(
       String id, Map<dynamic, dynamic> jsonObject) async {
@@ -95,8 +139,9 @@ class APIService {
     return null;
   }
 
-  Future<Job> findJob(String jobId) async {
-    var url = Uri.encodeFull('$ngrokUrl/job/find/$jobId');
+  Future<Job> findJob(String jobId, String studentId) async {
+    var url =
+        Uri.encodeFull('$ngrokUrl/job/find?jobId=$jobId&studentId=$studentId');
     http.Response response = await http.get(url);
     final jobJSON = jsonDecode(response.body);
     final theJob = Job.fromJson(data: jobJSON);

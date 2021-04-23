@@ -11,7 +11,7 @@ class Job {
   double latitude;
   String description;
   double distanceToPostcode;
-
+  bool isSaved;
   Job();
 
   factory Job.fromJson({Map<dynamic, dynamic> data}) {
@@ -27,7 +27,7 @@ class Job {
     job.longitude = data['longitude'].toDouble();
     job.latitude = data['latitude'].toDouble();
     job.description = data['description'];
-
+    job.isSaved = data['isSaved'];
     return job;
   }
 }

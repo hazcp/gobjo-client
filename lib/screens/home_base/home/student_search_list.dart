@@ -6,6 +6,7 @@ import 'package:test_app/models/Student.dart';
 import 'package:test_app/screens/home_base/home/student_home.dart';
 import 'package:test_app/screens/home_base/home/student_search_job_profile.dart';
 
+import '../../../api.dart';
 import '../../../components/card_job.dart';
 
 import '../../../constants.dart';
@@ -32,10 +33,13 @@ class _StudentSearchListState extends State<StudentSearchList> {
   bool clickedOnJob = false;
   String clickedJobId = "";
 
+  List<bool> isSaved;
+
   List<Widget> generateJobCards() {
     List<Widget> jobCardWidgets = [];
     for (int i = 0; i < jobList.length; i++) {
       Job thisJob = jobList[i];
+
       jobCardWidgets.add(JobCard(
         pictureName: 'default_job.png',
         jobType: thisJob.title,
@@ -44,6 +48,21 @@ class _StudentSearchListState extends State<StudentSearchList> {
         jobWage: thisJob.wage,
         jobTimeFrom: DateFormat.Hm().format(DateTime.parse(thisJob.timeFrom)),
         jobTimeTo: DateFormat.Hm().format(DateTime.parse(thisJob.timeTo)),
+        savedColour:
+            thisJob.isSaved == true ? kPurpleThemeColour : Color(0xff222222),
+        onPressSaved: () {
+          if (thisJob.isSaved == true) {
+            setState(() {
+              thisJob.isSaved = false;
+            });
+            apiService.updateJobStatus(student.id, thisJob.id, "");
+          } else if (thisJob.isSaved == false) {
+            setState(() {
+              thisJob.isSaved = true;
+            });
+            apiService.updateJobStatus(student.id, thisJob.id, "hasSaved");
+          }
+        },
         //^^^  parses ISO8601 format into datetime format, and uses intl to change into readable time
         onPress: () {
           setState(() {

@@ -7,7 +7,7 @@ import 'package:test_app/components/register_standard_button.dart';
 import '../api.dart';
 import '../components/background.dart';
 import '../constants.dart';
-import 'signup.dart';
+import 'home_base.dart';
 import 'package:email_validator/email_validator.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -244,7 +244,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => SignUp(),
+                                        builder: (context) => HomeBase(),
                                       ),
                                     );
                                   }

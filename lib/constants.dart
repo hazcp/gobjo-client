@@ -89,5 +89,7 @@ const kSecondaryGreyBItalic = TextStyle(
 
 const String Withdraw = 'Withdraw';
 const String View = 'View';
+const String Unsave = 'Unsave';
 
-const List<String> savedChoices = <String>[Withdraw, View];
+const List<String> savedChoices = <String>[View, Unsave];
+const List<String> appliedChoices = <String>[View, Withdraw];

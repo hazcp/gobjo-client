@@ -2,11 +2,18 @@ import 'package:flutter/material.dart';
 import '../constants.dart';
 
 class TopJobProfileSearch extends StatelessWidget {
-  TopJobProfileSearch({this.jobTitle, this.jobEmployer, this.jobLocation});
+  TopJobProfileSearch(
+      {this.jobTitle,
+      this.jobEmployer,
+      this.jobLocation,
+      this.onPressSaved,
+      this.savedColour});
 
   final String jobTitle;
   final String jobEmployer;
   final String jobLocation;
+  final Function onPressSaved;
+  final Color savedColour;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +51,10 @@ class TopJobProfileSearch extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.only(left: 33),
-          child: Icon(Icons.bookmark),
+          child: GestureDetector(
+            onTap: onPressSaved,
+            child: Icon(Icons.bookmark, color: savedColour),
+          ),
         ),
       ],
     );

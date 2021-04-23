@@ -10,17 +10,19 @@ import '../../../components/job_page_box.dart';
 import '../../../components/standard_button.dart';
 import '../../../constants.dart';
 
-class StudentJobsJobProfile extends StatefulWidget {
-  StudentJobsJobProfile({this.student, this.jobId});
+class StudentJobsSavedJobProfile extends StatefulWidget {
+  StudentJobsSavedJobProfile({this.student, this.jobId});
 
   final Student student;
   final String jobId;
 
   @override
-  _StudentJobsJobProfileState createState() => _StudentJobsJobProfileState();
+  _StudentJobsSavedJobProfileState createState() =>
+      _StudentJobsSavedJobProfileState();
 }
 
-class _StudentJobsJobProfileState extends State<StudentJobsJobProfile> {
+class _StudentJobsSavedJobProfileState
+    extends State<StudentJobsSavedJobProfile> {
   Student student;
   Job job;
   bool goBack;
@@ -34,7 +36,7 @@ class _StudentJobsJobProfileState extends State<StudentJobsJobProfile> {
   }
 
   void getJob(String jobId) async {
-    Job theJob = await apiService.findJob(widget.jobId);
+    Job theJob = await apiService.findJob(widget.jobId, student.id);
     setState(() {
       job = theJob;
     });
@@ -90,32 +92,33 @@ class _StudentJobsJobProfileState extends State<StudentJobsJobProfile> {
               boxText: '${job.description}',
             ),
             SizedBox(height: 50),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                StandardButton(
-                  textButton: 'WITHDRAW APPLICATION',
-                  onPressed: () {
-                    print('WITHDRAW APPLICATION');
-                  },
-                  colourButton: kPurpleThemeColour,
+            Row(
+              children: [
+                Expanded(
+                  child: StandardButton(
+                    textButton: 'APPLY',
+                    onPressed: () {
+                      apiService.updateJobStatus(
+                          student.id, job.id, "hasApplied");
+                      print("Sucessfully Applied");
+                      setState(() {
+                        goBack = true;
+                      });
+                    },
+                    colourButton: kPurpleThemeColour,
+                  ),
                 ),
-                StandardButton(
-                  textButton: 'BACK',
-                  onPressed: () {
-                    setState(() {
-                      goBack = true;
-                    });
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) {
-                    //       return StudentJobs(student: student);
-                    //     },
-                    //   ),
-                    // );
-                  },
-                  colourButton: kGreyColour,
+                SizedBox(width: 10),
+                Expanded(
+                  child: StandardButton(
+                    textButton: 'BACK',
+                    onPressed: () {
+                      setState(() {
+                        goBack = true;
+                      });
+                    },
+                    colourButton: kGreyColour,
+                  ),
                 ),
               ],
             ),

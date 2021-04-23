@@ -1,44 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:test_app/components/loading_indicator.dart';
+import 'package:test_app/components/top_job_profile_jobs.dart';
 import 'package:test_app/models/Job.dart';
 import 'package:test_app/models/Student.dart';
-import 'package:test_app/screens/home_base/home/student_search_list.dart';
+import 'package:test_app/screens/home_base/jobs/student_jobs.dart';
 import '../../../api.dart';
-import '../../../components/top_job_profile_search.dart';
 import '../../../components/job_page_box.dart';
 import '../../../components/standard_button.dart';
 import '../../../constants.dart';
 
-class StudentSearchJobProfile extends StatefulWidget {
-  StudentSearchJobProfile({this.student, this.jobId, this.jobList});
+class StudentJobsAppliedJobProfile extends StatefulWidget {
+  StudentJobsAppliedJobProfile({this.student, this.jobId});
 
   final Student student;
-  final List<Job> jobList;
   final String jobId;
 
   @override
-  _StudentSearchJobProfileState createState() =>
-      _StudentSearchJobProfileState();
+  _StudentJobsAppliedJobProfileState createState() =>
+      _StudentJobsAppliedJobProfileState();
 }
 
-class _StudentSearchJobProfileState extends State<StudentSearchJobProfile> {
+class _StudentJobsAppliedJobProfileState
+    extends State<StudentJobsAppliedJobProfile> {
   Student student;
   Job job;
-  bool goBack = false;
-  List<Job> theJobList;
+  bool goBack;
 
   @override
   void initState() {
     super.initState();
-    goBack = false;
     student = widget.student;
-    theJobList = widget.jobList;
+    goBack = false;
     getJob(widget.jobId);
   }
 
   void getJob(String jobId) async {
-    Job theJob = await apiService.findJob(jobId, student.id);
+    Job theJob = await apiService.findJob(widget.jobId, student.id);
     setState(() {
       job = theJob;
     });
@@ -48,7 +46,7 @@ class _StudentSearchJobProfileState extends State<StudentSearchJobProfile> {
   Widget build(BuildContext context) {
     return !goBack
         ? (job != null ? buildJobProfile() : Center(child: LoadingIndicator()))
-        : StudentSearchList(jobList: theJobList, student: student);
+        : StudentJobs(student: student);
   }
 
   Widget buildJobProfile() {
@@ -58,25 +56,10 @@ class _StudentSearchJobProfileState extends State<StudentSearchJobProfile> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            TopJobProfileSearch(
+            TopJobProfileJobs(
               jobTitle: job.title,
               jobEmployer: job.employer,
               jobLocation: job.location,
-              savedColour: job.isSaved ? kPurpleThemeColour : Color(0xff222222),
-              onPressSaved: () {
-                if (job.isSaved == true) {
-                  setState(() {
-                    job.isSaved = false;
-                  });
-                  apiService.updateJobStatus(student.id, widget.jobId, "");
-                } else if (job.isSaved == false) {
-                  setState(() {
-                    job.isSaved = true;
-                  });
-                  apiService.updateJobStatus(
-                      student.id, widget.jobId, "hasSaved");
-                }
-              },
             ),
             SizedBox(height: 30),
             Row(
@@ -109,34 +92,35 @@ class _StudentSearchJobProfileState extends State<StudentSearchJobProfile> {
               boxText: '${job.description}',
             ),
             SizedBox(height: 50),
-            Row(
-              children: [
-                Expanded(
-                  child: StandardButton(
-                    textButton: 'APPLY',
-                    onPressed: () {
-                      apiService.updateJobStatus(
-                          student.id, job.id, "hasApplied");
-                      print("Sucessfully Applied");
-                      theJobList.removeWhere((job) => job.id == widget.jobId);
-                      setState(() {
-                        goBack = true;
-                      });
-                    },
-                    colourButton: kPurpleThemeColour,
-                  ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                StandardButton(
+                  textButton: 'WITHDRAW APPLICATION',
+                  onPressed: () {
+                    apiService.updateJobStatus(student.id, widget.jobId, "");
+                    setState(() {
+                      goBack = true;
+                    });
+                  },
+                  colourButton: kPurpleThemeColour,
                 ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: StandardButton(
-                    textButton: 'BACK',
-                    onPressed: () {
-                      setState(() {
-                        goBack = true;
-                      });
-                    },
-                    colourButton: kGreyColour,
-                  ),
+                StandardButton(
+                  textButton: 'BACK',
+                  onPressed: () {
+                    setState(() {
+                      goBack = true;
+                    });
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) {
+                    //       return StudentJobs(student: student);
+                    //     },
+                    //   ),
+                    // );
+                  },
+                  colourButton: kGreyColour,
                 ),
               ],
             ),

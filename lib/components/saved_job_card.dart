@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:test_app/constants.dart';
 
-class AppliedJobCard extends StatelessWidget {
-  AppliedJobCard(
-      {this.jobEmployer, this.jobType, this.whenJob, this.isSelected});
+class SavedJobCard extends StatelessWidget {
+  SavedJobCard({this.jobEmployer, this.jobType, this.whenJob, this.isSelected});
 
   final String jobType;
   final String jobEmployer;
@@ -46,7 +45,7 @@ class AppliedJobCard extends StatelessWidget {
               ),
               onSelected: isSelected,
               itemBuilder: (BuildContext context) {
-                return appliedChoices.map((String choice) {
+                return savedChoices.map((String choice) {
                   return PopupMenuItem<String>(
                     value: choice,
                     child: Text(choice),

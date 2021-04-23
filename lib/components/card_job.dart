@@ -10,7 +10,9 @@ class JobCard extends StatelessWidget {
       this.jobFarAway,
       this.jobTimeFrom,
       this.jobTimeTo,
-      this.onPress});
+      this.onPress,
+      this.onPressSaved,
+      this.savedColour});
 
   final String pictureName;
   final String jobType;
@@ -20,6 +22,8 @@ class JobCard extends StatelessWidget {
   final String jobTimeFrom;
   final String jobTimeTo;
   final Function onPress;
+  final Function onPressSaved;
+  final Color savedColour;
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +47,12 @@ class JobCard extends StatelessWidget {
               jobTimeTo: jobTimeTo,
             ),
             Padding(
-                padding: EdgeInsets.only(left: 40.0),
-                child: Icon(Icons.bookmark)),
+              padding: EdgeInsets.only(left: 40.0),
+              child: GestureDetector(
+                onTap: onPressSaved,
+                child: Icon(Icons.bookmark, color: savedColour),
+              ),
+            ),
           ],
         ),
       ),
