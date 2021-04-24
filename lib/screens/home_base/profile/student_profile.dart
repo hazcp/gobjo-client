@@ -21,9 +21,11 @@ class _StudentProfileState extends State<StudentProfile> {
   bool studentIBS;
   bool studentIW;
   bool studentIKP;
+  bool isEditingProfile;
 
   @override
   void initState() {
+    isEditingProfile = false;
     studentName = widget.student.name;
     studentUniversity = widget.student.university;
     studentAge = widget.student.age;
@@ -50,8 +52,7 @@ class _StudentProfileState extends State<StudentProfile> {
     return resultantExperienceA;
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget buildProfile() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -126,14 +127,17 @@ class _StudentProfileState extends State<StudentProfile> {
                   colourButton: kPurpleThemeColour,
                   textButton: 'EDIT PROFILE',
                   onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation1, animation2) =>
-                            StudentEditProfile(),
-                        transitionDuration: Duration(seconds: 0),
-                      ),
-                    );
+                    setState(() {
+                      isEditingProfile = true;
+                    });
+                    // Navigator.pushReplacement(
+                    //   context,
+                    //   PageRouteBuilder(
+                    //     pageBuilder: (context, animation1, animation2) =>
+                    //         StudentEditProfile(),
+                    //     transitionDuration: Duration(seconds: 0),
+                    //   ),
+                    // );
                   },
                 ),
               ),
@@ -142,5 +146,14 @@ class _StudentProfileState extends State<StudentProfile> {
         ),
       ],
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return !isEditingProfile
+        ? buildProfile()
+        : StudentEditProfile(
+            student: widget.student,
+          );
   }
 }
