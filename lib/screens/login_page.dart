@@ -7,6 +7,10 @@ import '../components/standard_button.dart';
 import '../constants.dart';
 
 class LoginPage extends StatefulWidget {
+  // LoginPage(this.errorMessage);
+  //
+  // final String errorMessage;
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -16,6 +20,17 @@ class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  // String loginFailedError;
+  bool accountWithEmailExists;
+  bool passwordIsCorrect;
+
+  @override
+  void initState() {
+    // loginFailedError = widget.errorMessage;
+    accountWithEmailExists = false;
+    passwordIsCorrect = false;
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -47,6 +62,8 @@ class _LoginPageState extends State<LoginPage> {
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return "Enter your email";
+                          } else if (!accountWithEmailExists) {
+                            return "An account with that email does not exist";
                           }
                           return null;
                         },
@@ -57,6 +74,9 @@ class _LoginPageState extends State<LoginPage> {
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return "Enter your password";
+                          } else if (accountWithEmailExists &&
+                              !passwordIsCorrect) {
+                            return "Your username and password do not match";
                           }
                           return null;
                         },
@@ -70,10 +90,24 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       StandardButton(
                         textButton: 'SIGN IN',
-                        onPressed: () {
+                        onPressed: () async {
+                          String email = _emailController.text;
+                          String password = _passwordController.text;
+
+                          bool doesAccountExistWithEmail =
+                              await apiService.isExistingStudentEmail(email);
+                          setState(() {
+                            accountWithEmailExists = doesAccountExistWithEmail;
+                          });
+                          bool isPasswordCorrect = await apiService
+                              .isPasswordCorrect(email, password);
+
+                          setState(() {
+                            passwordIsCorrect = isPasswordCorrect;
+                          });
+
                           if (_formKey.currentState.validate()) {
-                            apiService.loginStudent(_emailController.text,
-                                _passwordController.text);
+                            apiService.loginStudent(email, password);
                             Navigator.push(
                               context,
                               MaterialPageRoute(

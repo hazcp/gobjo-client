@@ -8,7 +8,7 @@ import 'models/JobStatus.dart';
 import 'models/Student.dart';
 
 class APIService {
-  final ngrokUrl = "https://e854e5710b70.ngrok.io";
+  final ngrokUrl = "https://c502e20bafd7.ngrok.io";
 
   final StreamController<Student> studentStream =
       StreamController<Student>.broadcast();
@@ -35,16 +35,12 @@ class APIService {
   }
 
   void loginStudent(String email, String password) async {
-    try {
-      var url = Uri.encodeFull(
-          '$ngrokUrl/student/login?email=$email&password=$password');
-      http.Response response = await http.post(url);
-      final studentJSON = jsonDecode(response.body);
-      final student = Student.fromJson(data: studentJSON);
-      studentStream.add(student);
-    } on Exception catch (e) {
-      studentStream.addError("login failed");
-    }
+    var url = Uri.encodeFull(
+        '$ngrokUrl/student/login?email=$email&password=$password');
+    http.Response response = await http.post(url);
+    final studentJSON = jsonDecode(response.body);
+    final student = Student.fromJson(data: studentJSON);
+    studentStream.add(student);
   }
 
   Future<bool> isExistingStudentEmail(String email) async {
@@ -53,6 +49,15 @@ class APIService {
     final parsedJSON = jsonDecode(response.body);
     final emailExists = parsedJSON['exists'];
     return emailExists;
+  }
+
+  Future<bool> isPasswordCorrect(String email, String password) async {
+    var url = Uri.encodeFull(
+        '$ngrokUrl/student/validate?email=$email&password=$password');
+    http.Response response = await http.get(url);
+    final parsedJSON = jsonDecode(response.body);
+    final isPasswordCorrect = parsedJSON['correct'];
+    return isPasswordCorrect;
   }
 
   // make return something? perhaps ID of job status or status code

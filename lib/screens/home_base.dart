@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:test_app/screens/login_page.dart';
 import 'package:test_app/screens/splash_screen.dart';
 import 'package:test_app/screens/student_home_base.dart';
 import '../api.dart';
@@ -19,9 +20,6 @@ class _HomeBaseState extends State<HomeBase> {
       stream: apiService.studentStream.stream,
       builder: (BuildContext context, AsyncSnapshot<Student> studentSnapshot) {
         print('builder called');
-        if (studentSnapshot.hasError) {
-          return Text("Login Failed: " + studentSnapshot.error.toString());
-        }
         if (studentSnapshot.hasData) {
           print(studentSnapshot.data.pageNumber);
           if (studentSnapshot.data.pageNumber == 1) {
