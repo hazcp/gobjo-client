@@ -8,7 +8,7 @@ import 'models/JobStatus.dart';
 import 'models/Student.dart';
 
 class APIService {
-  final ngrokUrl = "https://f0cc3b0224d6.ngrok.io";
+  final ngrokUrl = "https://82355ac67fb0.ngrok.io";
 
   final StreamController<Student> studentStream =
       StreamController<Student>.broadcast();
